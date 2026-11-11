@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUMEN Dining - ตรวจสอบและชำระเงิน</title>
+  
+  <!-- Google Fonts: Playfair Display & Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #f7f4ed;
+      font-family: 'Prompt', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* กรอบจำลองขนาดหน้าจอมือถือ */
+    .mobile-container {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      height: 100dvh;
+      background-color: #f8f3e9;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+      color: #3d2314;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- Top Header Bar --- */
+    .header {
+      background-color: #3d2314;
+      color: #d6b896;
+      text-align: center;
+      padding: 6px 0 4px 0;
+      flex-shrink: 0;
+    }
+
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      letter-spacing: 3px;
+      line-height: 1;
+      font-weight: 400;
+    }
+
+    .header-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin-top: 1px;
+      color: #e5d2be;
+    }
+
+    /* --- Main Content Area --- */
+    .content {
+      padding: 8px 16px 12px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    /* --- Section หัวข้อหลัก --- */
+    .title-section {
+      text-align: center;
+      margin-top: 0;
+    }
+
+    .page-title {
+      font-family: 'Prompt', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: #5c3422;
+      line-height: 1.25;
+    }
+
+    .page-subtitle {
+      font-family: 'Prompt', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: #5c3422;
+      margin-top: 1px;
+    }
+
+    /* --- Receipt / Summary Card --- */
+    .receipt-card-wrapper {
+      position: relative;
+      margin: 0px;
+    }
+
+    .receipt-card {
+      background-color: #f4e7d8;
+      border-radius: 8px;
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      position: relative;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.03);
+    }
+
+    .receipt-card::before,
+    .receipt-card::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background-size: 14px 8px;
+    }
+
+    .receipt-card::before {
+      top: -8px;
+      background-image: radial-gradient(circle at 7px 8px, transparent 5px, #faf2e9 6px);
+    }
+
+    .receipt-card::after {
+      bottom: -8px;
+      background-image: radial-gradient(circle at 7px 0px, transparent 5px, #faf2e9 6px);
+    }
+
+    .receipt-title {
+      text-align: center;
+      font-family: 'Prompt', sans-serif;
+      font-size: 14.5px;
+      font-weight: 600;
+      color: #5c3422;
+    }
+
+    .receipt-subtitle {
+      font-family: 'Prompt', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      color: #5c3422;
+      margin-bottom: 1px;
+    }
+
+    /* --- ส่วนที่ 1: ปรับแต่งให้โซนรายการอาหารเปิดระบบสไลด์เลื่อนขึ้น-ลงได้ --- */
+    .item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 105px; /* กำหนดความสูงล็อกไว้ ปรับให้เลื่อนสไลด์เมื่อมีรายการเพิ่ม */
+      overflow-y: auto;  /* เปิดระบบเลื่อนสไลด์แนวตั้ง */
+      padding-right: 4px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .item-list::-webkit-scrollbar {
+      width: 3.5px;
+    }
+
+    .item-list::-webkit-scrollbar-thumb {
+      background-color: #d6c6b3;
+      border-radius: 4px;
+    }
+
+    .item-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .item-img-wrapper {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background-color: #3d2314;
+    }
+
+    .item-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .item-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .item-name {
+      font-family: 'Prompt', sans-serif;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.2;
+    }
+
+    .item-en-name {
+      font-family: 'Prompt', sans-serif;
+      font-size: 8.5px;
+      color: #4a4a4a;
+      margin-top: 1px;
+    }
+
+    .item-qty {
+      font-family: 'Prompt', sans-serif;
+      font-size: 9.5px;
+      color: #5c3422;
+      margin-top: 1px;
+      font-weight: 500;
+    }
+
+    .dashed-divider {
+      width: 100%;
+      border-top: 1.5px dashed #d6c6b3;
+      margin: 1px 0;
+    }
+
+    /* สรุปราคา */
+    .summary-group {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: 'Prompt', sans-serif;
+      font-size: 11px;
+      color: #4a2717;
+      font-weight: 500;
+    }
+
+    .summary-row .val {
+      font-weight: 600;
+    }
+
+    /* --- ส่วนที่ 2: ปรับขยายขนาดข้อความและกรอบสแกน QR Code ให้ใหญ่ขึ้น --- */
+    .qr-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ขยายฟอนต์ "สแกนเพื่อชำระเงิน" */
+    .qr-title {
+      font-family: 'Prompt', sans-serif;
+      font-size: 16.5px; 
+      font-weight: 600;
+      color: #5c3422;
+    }
+
+    /* ขยายกรอบสแกน QR Code */
+    .qr-box-placeholder {
+      width: 155px;  /* ขยายจาก 130px เป็น 155px */
+      height: 155px; /* ขยายจาก 130px เป็น 155px */
+      background-color: #ffffff;
+      border: 1.5px dashed #cbbcae;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #8c7662;
+      font-family: 'Prompt', sans-serif;
+      font-size: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    /* ขยายฟอนต์ "ยอดชำระสุทธิ ฿5,943" */
+    .total-net-text {
+      font-family: 'Prompt', sans-serif;
+      font-size: 18px; 
+      font-weight: 700;
+      color: #5c3422;
+      margin-top: 2px;
+    }
+
+    /* --- Bottom Button --- */
+    .btn-done {
+      width: 100%;
+      background-color: #4a2517;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 8px 0 6px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+    }
+
+    .btn-done .main-text {
+      font-family: 'Prompt', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .btn-done .sub-text {
+      font-family: 'Prompt', sans-serif;
+      font-size: 9.5px;
+      opacity: 0.9;
+      font-weight: 400;
+      margin-top: 1px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mobile-container">
+    <!-- Header Bar -->
+    <header class="header">
+      <div class="header-title">LUMEN</div>
+      <div class="header-subtitle">Dining</div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="content">
+      <!-- Section หัวข้อหลัก -->
+      <div class="title-section">
+        <h1 class="page-title">โต๊ะ T-08 (คิวของคุณ A-04)</h1>
+        <p class="page-subtitle">ตรวจสอบและชำระเงิน</p>
+      </div>
+
+      <!-- Receipt / Summary Card -->
+      <div class="receipt-card-wrapper">
+        <div class="receipt-card">
+          <div class="receipt-title">การ์ดใบเสร็จ/สรุปยอดเงิน</div>
+
+          <div class="dashed-divider"></div>
+
+          <div class="receipt-subtitle">รายการอาหารทั้งหมดที่สั่ง (Order Summary)</div>
+
+          <!-- โซนรายการอาหาร (รองรับการเลื่อนสไลด์ขึ้น-ลงเมื่อมีหลายเมนู) -->
+          <div class="item-list" id="itemList">
+            <!-- Item 1: Wagyu -->
+            <div class="item-row">
+              <div class="item-img-wrapper">
+                <img src="wagyu_steak.jpg" alt="สเต๊กวากิว A5">
+              </div>
+              <div class="item-info">
+                <div class="item-name">สเต๊กวากิว A5</div>
+                <div class="item-en-name">(Premium Wagyu Striploin A5)</div>
+                <div class="item-qty">จำนวน 1</div>
+              </div>
+            </div>
+
+            <!-- Item 2: Scallops -->
+            <div class="item-row">
+              <div class="item-img-wrapper">
+                <img src="scallop_dish.jpg" alt="หอยเชลล์ยักษ์พรีเมี่ยม">
+              </div>
+              <div class="item-info">
+                <div class="item-name">หอยเชลล์ยักษ์พรีเมี่ยม</div>
+                <div class="item-en-name">(Pan-seared Diver Scallops)</div>
+                <div class="item-qty">จำนวน 1</div>
+              </div>
+            </div>
+
+            <!-- Item 3: Salmon (ตัวอย่างสำหรับการสไลด์เลื่อน) -->
+            <div class="item-row">
+              <div class="item-img-wrapper">
+                <img src="dish3.jpg" alt="สเต๊กแซลมอนย่าง">
+              </div>
+              <div class="item-info">
+                <div class="item-name">สเต๊กแซลมอนย่าง</div>
+                <div class="item-en-name">(Grilled Salmon Fillet)</div>
+                <div class="item-qty">จำนวน 1</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dashed-divider"></div>
+
+          <!-- Summary Breakdown -->
+          <div class="summary-group">
+            <div class="summary-row">
+              <span>ยอดรวม</span>
+              <span class="val">฿5,050</span>
+            </div>
+            <div class="summary-row">
+              <span>ค่าบริการ 10%</span>
+              <span class="val">฿505</span>
+            </div>
+            <div class="summary-row">
+              <span>ภาษีมูลค่าเพิ่ม 7% (vat)</span>
+              <span class="val">฿388.85</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scan QR Section (ปรับขนาดใหญ่ขึ้น) -->
+      <div class="qr-section">
+        <div class="qr-title">สแกนเพื่อชำระเงิน</div>
+
+        <!-- กรอบเว้นพื้นที่สำหรับ QR Code -->
+        <div class="qr-box-placeholder">
+          <span>[ เว้นพื้นที่สำหรับ QR Code ]</span>
+        </div>
+
+        <div class="total-net-text">ยอดชำระสุทธิ ฿5,943</div>
+      </div>
+
+      <!-- Bottom Done Button -->
+      <button class="btn-done">
+        <span class="main-text">เสร็จสิ้น / ชำระเงินแล้ว</span>
+        <span class="sub-text">Done</span>
+      </button>
+    </main>
+  </div>
+
+  <script>
+    /* สคริปต์สไลด์เลื่อนดูรายการอาหารแบบสัมผัส/ลากเมาส์ */
+    const itemList = document.getElementById('itemList');
+    let isDown = false;
+    let startY;
+    let scrollTop;
+
+    itemList.addEventListener('mousedown', (e) => {
+      isDown = true;
+      startY = e.pageY - itemList.offsetTop;
+      scrollTop = itemList.scrollTop;
+    });
+
+    itemList.addEventListener('mouseleave', () => {
+      isDown = false;
+    });
+
+    itemList.addEventListener('mouseup', () => {
+      isDown = false;
+    });
+
+    itemList.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const y = e.pageY - itemList.offsetTop;
+      const walk = (y - startY) * 1.5;
+      itemList.scrollTop = scrollTop - walk;
+    });
+  </script>
+
+</body>
+</html>

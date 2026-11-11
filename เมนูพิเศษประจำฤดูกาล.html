@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUMEN Dining - Seasonal Menu</title>
+  <!-- Google Fonts: Playfair Display (หัวข้ออังกฤษ/ตัวเลข/ราคาสไตล์ Serif) & Prompt (ข้อความภาษาไทย) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #f7f4ed;
+      font-family: 'Prompt', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card-container {
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      height: 100dvh;
+      background-color: #fcf9f2;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+      color: #3d2314;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Bar */
+    .header {
+      background-color: #3d2314;
+      color: #d6b896;
+      text-align: center;
+      padding: 6px 0 4px 0;
+      flex-shrink: 0;
+    }
+
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      letter-spacing: 3px;
+      line-height: 1;
+      font-weight: 400;
+    }
+
+    .header-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin-top: 1px;
+      color: #e5d2be;
+    }
+
+    /* Content Area */
+    .content {
+      padding: 10px 16px 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* หัวข้อหลักภาษาไทย */
+    .main-heading {
+      font-family: 'Charm', cursive, serif;
+      text-align: center;
+      font-size: 26px;
+      font-weight: 700;
+      color: #5c3422;
+      margin-bottom: 4px;
+      flex-shrink: 0;
+    }
+
+    /* รูปภาพเมนู */
+    .image-card {
+      position: relative;
+      width: 100%;
+      height: 175px;
+      border-radius: 16px;
+      overflow: hidden;
+      background-color: #1a1a1a;
+      background-image: url('seasonal_menu.jpg'); 
+      background-size: cover;
+      background-position: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      margin-bottom: 8px;
+    }
+
+    .image-overlay {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      right: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .dish-name-overlay {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-weight: 600;
+      line-height: 1.15;
+      color: #ffffff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.9);
+    }
+
+    .brand-badge {
+      font-family: 'Prompt', sans-serif;
+      font-size: 6.5px;
+      color: #e0e0e0;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.9);
+      opacity: 0.9;
+    }
+
+    .brand-badge .s-logo {
+      font-family: 'Playfair Display', serif;
+      border: 1px solid #ffffff;
+      border-radius: 50%;
+      width: 10px;
+      height: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6.5px;
+      font-weight: bold;
+    }
+
+    /* หัวข้อภาษาอังกฤษตามรูปตัวอย่าง ( Playfair Display สีน้ำตาลทองอมส้ม ) */
+    .course-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 19.5px;
+      font-weight: 500;
+      color: #8e4420;
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+
+    /* ข้อความภาษาไทยตามรูปตัวอย่าง ( Prompt weight 500 ) */
+    .course-description {
+      font-family: 'Prompt', sans-serif;
+      font-size: 11.5px;
+      color: #5c3422;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    /* ตัวเลขราคาและเครื่องหมาย ฿ ( Playfair Display ) */
+    .price-tag {
+      margin: 6px 0 2px 0;
+    }
+
+    .price-amount {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #5c3422;
+    }
+
+    .price-unit {
+      font-family: 'Prompt', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4a2c20;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #e2d7c7;
+      margin: 6px 0;
+    }
+
+    /* โน้ตไฮไลท์พริก */
+    .highlight-note {
+      display: flex;
+      align-items: flex-start;
+      gap: 5px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 10.5px;
+      color: #5c3422;
+      line-height: 1.35;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .highlight-note .chili-icon {
+      font-size: 12px;
+      line-height: 1.2;
+      flex-shrink: 0;
+    }
+
+    /* รายการอาหาร */
+    .course-list-title {
+      font-family: 'Prompt', sans-serif;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #5c3422;
+      margin-bottom: 3px;
+    }
+
+    .course-list {
+      list-style: none;
+      padding-left: 0;
+      margin-bottom: 6px;
+    }
+
+    .course-list li {
+      font-family: 'Prompt', sans-serif;
+      font-size: 11px;
+      color: #5c3422;
+      line-height: 1.45;
+      font-weight: 500;
+    }
+
+    /* ปุ่มกดด้านล่าง */
+    .button-group {
+      display: flex;
+      gap: 6px;
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .btn-add {
+      flex: 1.15;
+      background-color: #d87b8c;
+      color: #ffffff;
+      border: none;
+      padding: 10px 4px;
+      border-radius: 10px 4px 4px 10px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .btn-reserve {
+      flex: 1;
+      background-color: #f9cad5;
+      color: #b84c64;
+      border: none;
+      padding: 10px 4px;
+      border-radius: 4px 10px 10px 4px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      white-space: nowrap;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card-container">
+    <!-- Header Bar -->
+    <header class="header">
+      <div class="header-title">LUMEN</div>
+      <div class="header-subtitle">Dining</div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content">
+      <h1 class="main-heading">เมนูพิเศษประจำฤดูกาล</h1>
+
+      <!-- รูปภาพเมนู -->
+      <div class="image-card">
+        <div class="image-overlay">
+          <div class="dish-name-overlay">
+            Smoked Salmon Tartlet with Dill Cream <br>& Ikura
+          </div>
+        
+        </div>
+      </div>
+
+      <!-- รายละเอียดคอร์สอาหาร -->
+      <section>
+        <h2 class="course-title">Chef's Tasting: wagyu & Scallop Symphony</h2>
+        <p class="course-description">
+          เมนูคัดสรรสุดพิเศษทั้ง 6 รายการโดยเชฟประจำฤดูกาล
+        </p>
+      </section>
+
+      <!-- ราคา -->
+      <div class="price-tag">
+        <span class="price-amount">฿5,900++</span> <span class="price-unit">/ ท่าน</span>
+      </div>
+
+      <hr class="divider">
+
+      <!-- โน้ตไฮไลท์พริก -->
+      <div class="highlight-note">
+        <span class="chili-icon">🌶️</span>
+        <div>
+          คอร์สพิเศษชูวัตถุดิบพรีเมี่ยมประจำฤดูกาล รสชาติสดชื่นและมีเอกลักษณ์เฉพาะตัว
+        </div>
+      </div>
+
+      <!-- รายการอาหารในคอร์ส -->
+      <div>
+        <div class="course-list-title">รายการอาหารในคอร์ส</div>
+        <ul class="course-list">
+          <li>1. Amuse-Bouche : Smoked Salmon Tartlet with Dill Cream & Ikura </li>
+          <li>2. Appetizer: Chilean King Crab Leg with Yuzu Citrus Gel </li>
+          <li>3. Salad: Grilled Peach & Prosciutto Burrata Salad </li>
+          <li>4. Main Course: Handcrafted Black Truffle & Wild Mushroom Ravioli</li>
+          <li>5. Main Steak: Rack of Iberico Pork Chop with Apple Cider Reduction </li>
+          <li>6. Dessert: Yuzu Lemon Meringue Sphere with Smoked Vanilla Gelato </li>
+        </ul>
+      </div>
+
+      <!-- ปุ่มกดด้านล่างสุด -->
+      <div class="button-group">
+        <button class="btn-add">+ เพิ่มคอร์สนี้ลงใน order</button>
+        <button class="btn-reserve">สั่งจองคอร์สพิเศษ</button>
+      </div>
+    </main>
+  </div>
+
+</body>
+</html>

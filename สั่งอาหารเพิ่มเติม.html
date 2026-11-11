@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUMEN Dining - สั่งอาหารเพิ่มเติม</title>
+  
+  <!-- Google Fonts: Playfair Display, Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #f7f4ed;
+      font-family: 'Prompt', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* กรอบจำลองขนาดหน้าจอมือถือ */
+    .mobile-container {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      height: 100dvh;
+      background-color: #fcf9f2;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+      color: #3d2314;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- Top Header Bar --- */
+    .header {
+      position: relative;
+      background-color: #3d2314;
+      color: #d6b896;
+      text-align: center;
+      padding: 6px 4px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      letter-spacing: 3px;
+      line-height: 1;
+      font-weight: 400;
+    }
+
+    .header-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin-top: 1px;
+      color: #e5d2be;
+    }
+
+    /* ตะกร้าสินค้ามุมขวาบน */
+    .cart-btn {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #e5d2be;
+      display: flex;
+      align-items: center;
+    }
+
+    .cart-icon-wrapper {
+      position: relative;
+      width: 24px;
+      height: 24px;
+    }
+
+    .cart-icon-wrapper svg {
+      width: 100%;
+      height: 100%;
+      fill: none;
+      stroke: #e5d2be;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background-color: #3d2314;
+      color: #e5d2be;
+      font-family: 'Prompt', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid #e5d2be;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* --- Section: โต๊ะ & คิว + หัวข้อหน้า --- */
+    .top-info-section {
+      padding: 12px 16px 4px 16px;
+      flex-shrink: 0;
+    }
+
+    .table-queue-pill {
+      display: inline-block;
+      background-color: #6e351d;
+      color: #ffffff;
+      font-family: 'Prompt', sans-serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 6px 18px;
+      border-radius: 20px;
+      margin-bottom: 8px;
+    }
+
+    .page-title {
+      font-family: 'Prompt', sans-serif;
+      font-size: 25px;
+      font-weight: 700;
+      color: #3d2314;
+      line-height: 1.15;
+    }
+
+    /* --- Category Navigation Bar --- */
+    .category-nav-wrapper {
+      position: relative;
+      width: 100%;
+      border-bottom: 1.5px solid #dfd7ca;
+      flex-shrink: 0;
+      margin-top: 6px;
+      margin-bottom: 8px;
+    }
+
+    .category-nav {
+      display: flex;
+      gap: 12px;
+      padding: 4px 14px 0px 14px;
+      overflow-x: auto;
+      white-space: nowrap;
+      scroll-behavior: smooth;
+      cursor: grab;
+      user-select: none;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .category-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-nav.active-drag {
+      cursor: grabbing;
+    }
+
+    .category-item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
+      cursor: pointer;
+      padding-bottom: 8px;
+    }
+
+    .category-pill {
+      background-color: #a48b6d;
+      color: #ffffff;
+      font-family: 'Playfair Display', serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 6px 16px;
+      border-radius: 20px;
+      white-space: nowrap;
+      transition: background-color 0.2s ease;
+    }
+
+    .category-subtext {
+      font-family: 'Prompt', sans-serif;
+      font-size: 10px;
+      color: #3d2314;
+      font-weight: 500;
+    }
+
+    .category-item.active .category-pill {
+      background-color: #7b6248;
+    }
+
+    .category-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: #5c3422;
+      border-radius: 2px;
+    }
+
+    /* --- Scrollable Menu Grid Area (2 คอลัมน์คู่แบบสไลด์ขึ้น-ลง) --- */
+    .menu-container {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 6px 14px 85px 14px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .menu-container::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .menu-container::-webkit-scrollbar-thumb {
+      background-color: #d6c5b3;
+      border-radius: 4px;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    /* --- กล่องการ์ดเมนูอาหาร (ความสูงทรงยาวตามภาพตัวอย่าง) --- */
+    .menu-card {
+      background-color: #5c3422;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      color: #ffffff;
+      height: 395px;
+    }
+
+    .card-img-wrapper {
+      width: 100%;
+      height: 220px;
+      background-color: #3d2314;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .card-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-body {
+      padding: 10px 10px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .dish-name-en {
+      font-family: 'Playfair Display', serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.25;
+    }
+
+    .dish-name-th {
+      font-family: 'Prompt', sans-serif;
+      font-size: 9.5px;
+      color: #e5d2be;
+      margin-top: 2px;
+      margin-bottom: 4px;
+      font-weight: 400;
+    }
+
+    .dish-desc-th {
+      font-family: 'Prompt', sans-serif;
+      font-size: 8.5px;
+      color: #f7f4ed;
+      line-height: 1.35;
+      opacity: 0.9;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .price-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .btn-add-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      font-family: 'Prompt', sans-serif;
+      font-size: 9.5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-add-item:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* --- Bottom Floating Cart Bar --- */
+    .cart-bottom-bar {
+      position: absolute;
+      bottom: 12px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+    }
+
+    .cart-info-box {
+      flex: 1;
+      background-color: #4a2717;
+      color: #ffffff;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn-view-order {
+      background-color: #6e4635;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mobile-container">
+    <!-- Header Bar -->
+    <header class="header">
+      <div class="header-brand">
+        <div class="header-title">LUMEN</div>
+        <div class="header-subtitle">Dining</div>
+      </div>
+      <button class="cart-btn" aria-label="Cart">
+        <div class="cart-icon-wrapper">
+          <svg viewBox="0 0 24 24">
+            <circle cx="9" cy="20" r="1.5"></circle>
+            <circle cx="18" cy="20" r="1.5"></circle>
+            <path d="M1 2h3.5l2.6 12.3a2 2 0 0 0 2 1.7h9.8a2 2 0 0 0 2-1.6L23 6H6"></path>
+          </svg>
+          <div class="cart-badge">0</div>
+        </div>
+      </button>
+    </header>
+
+    <!-- Section: ป้ายบอกโต๊ะและคิว + หัวข้อหน้า -->
+    <div class="top-info-section">
+      <div class="table-queue-pill">
+        โต๊ะ T-08 คิว A-04
+      </div>
+      <h1 class="page-title">สั่งอาหารเพิ่มเติม</h1>
+    </div>
+
+    <!-- Category Nav Bar -->
+    <div class="category-nav-wrapper">
+      <div class="category-nav" id="categoryNav">
+        <div class="category-item active" onclick="selectCategory(this)">
+          <div class="category-pill">Appetizers</div>
+          <div class="category-subtext">ทานเล่น</div>
+        </div>
+        <div class="category-item" onclick="selectCategory(this)">
+          <div class="category-pill">Main course</div>
+          <div class="category-subtext">จานหลัก</div>
+        </div>
+        <div class="category-item" onclick="selectCategory(this)">
+          <div class="category-pill">Main steak</div>
+          <div class="category-subtext">สเต๊กพรีเมี่ยม</div>
+        </div>
+        <div class="category-item" onclick="selectCategory(this)">
+          <div class="category-pill">Dessert</div>
+          <div class="category-subtext">ของหวาน</div>
+        </div>
+        <div class="category-item" onclick="selectCategory(this)">
+          <div class="category-pill">Water</div>
+          <div class="category-subtext">น้ำ</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Grid Area (2 คอลัมน์) -->
+    <main class="menu-container" id="menuContainer">
+      <div class="menu-grid">
+        
+        <!-- Card 1: Wagyu -->
+        <div class="menu-card">
+          <div class="card-img-wrapper">
+            <img src="wagyu_steak.jpg" alt="Premium Wagyu Striploin A5">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Premium Wagyu Striploin A5</div>
+              <div class="dish-name-th">สเต๊กวากิว A5</div>
+              <div class="dish-desc-th">
+                เนื้อวากิว A5 ย่างเตาถ่านเสิร์ฟคู่กับซอสสูตรพิเศษและทรัฟเฟิลสด
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">3,200฿</span>
+              <button class="btn-add-item">+ เพิ่ม</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Scallops -->
+        <div class="menu-card">
+          <div class="card-img-wrapper">
+            <img src="scallop_dish.jpg" alt="Pan-seared Diver Scallops">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Pan-seared Diver Scallops</div>
+              <div class="dish-name-th">หอยเชลล์ยักษ์พรีเมี่ยม</div>
+              <div class="dish-desc-th">
+                หอยเชลล์ฮอกไกโดยักษ์ย่างกระทะ เสิร์ฟกับซอมทรูฟและโฟมนม
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">1,850฿</span>
+              <button class="btn-add-item">+ เพิ่ม</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Salmon -->
+        <div class="menu-card">
+          <div class="card-img-wrapper">
+            <img src="dish3.jpg" alt="Grilled Salmon Fillet">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Grilled Salmon Fillet</div>
+              <div class="dish-name-th">สเต๊กแซลมอนย่าง</div>
+              <div class="dish-desc-th">
+                แซลมอนนอร์เวย์สด ย่างหนังกรอบเสิร์ฟคู่กับซอสมะนาวเนอร์บัตเตอร์
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">950฿</span>
+              <button class="btn-add-item">+ เพิ่ม</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Souffle -->
+        <div class="menu-card">
+          <div class="card-img-wrapper">
+            <img src="dish4.jpg" alt="Chocolate Soufflé">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Chocolate Soufflé</div>
+              <div class="dish-name-th">ช็อกโกแลตซูเฟล่</div>
+              <div class="dish-desc-th">
+                ซูเฟล่ช็อกโกแลตเข้มข้น อบสดใหม่เสิร์ฟพร้อมไอศกรีมวานิลลาแท้
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">450฿</span>
+              <button class="btn-add-item">+ เพิ่ม</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Bottom Cart Bar -->
+    <div class="cart-bottom-bar">
+      <div class="cart-info-box">
+        2 รายการ | ฿5,050
+      </div>
+      <button class="btn-view-order">
+        ดูรายการที่เลือก &gt;
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    /* 1. ลากเมาส์เลื่อนหมวดหมู่ซ้าย-ขวา */
+    const categoryNav = document.getElementById('categoryNav');
+    let isNavDown = false;
+    let startX;
+    let scrollLeft;
+
+    categoryNav.addEventListener('mousedown', (e) => {
+      isNavDown = true;
+      categoryNav.classList.add('active-drag');
+      startX = e.pageX - categoryNav.offsetLeft;
+      scrollLeft = categoryNav.scrollLeft;
+    });
+
+    categoryNav.addEventListener('mouseleave', () => {
+      isNavDown = false;
+      categoryNav.classList.remove('active-drag');
+    });
+
+    categoryNav.addEventListener('mouseup', () => {
+      isNavDown = false;
+      categoryNav.classList.remove('active-drag');
+    });
+
+    categoryNav.addEventListener('mousemove', (e) => {
+      if (!isNavDown) return;
+      e.preventDefault();
+      const x = e.pageX - categoryNav.offsetLeft;
+      const walk = (x - startX) * 2;
+      categoryNav.scrollLeft = scrollLeft - walk;
+    });
+
+    function selectCategory(element) {
+      const items = document.querySelectorAll('.category-item');
+      items.forEach(item => item.classList.remove('active'));
+      element.classList.add('active');
+
+      element.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest'
+      });
+    }
+
+    /* 2. ลากเมาส์สไลด์เลื่อนดูรายการอาหารขึ้น-ลง */
+    const menuContainer = document.getElementById('menuContainer');
+    let isMenuDown = false;
+    let startY;
+    let scrollTop;
+
+    menuContainer.addEventListener('mousedown', (e) => {
+      isMenuDown = true;
+      startY = e.pageY - menuContainer.offsetTop;
+      scrollTop = menuContainer.scrollTop;
+    });
+
+    menuContainer.addEventListener('mouseleave', () => {
+      isMenuDown = false;
+    });
+
+    menuContainer.addEventListener('mouseup', () => {
+      isMenuDown = false;
+    });
+
+    menuContainer.addEventListener('mousemove', (e) => {
+      if (!isMenuDown) return;
+      e.preventDefault();
+      const y = e.pageY - menuContainer.offsetTop;
+      const walk = (y - startY) * 1.5;
+      menuContainer.scrollTop = scrollTop - walk;
+    });
+  </script>
+
+</body>
+</html>

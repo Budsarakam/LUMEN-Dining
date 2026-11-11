@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUMEN Dining - Menu Order</title>
+  
+  <!-- Google Fonts: Playfair Display, Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #f7f4ed;
+      font-family: 'Prompt', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* กรอบจำลองขนาดหน้าจอมือถือ */
+    .mobile-container {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      height: 100dvh;
+      background-color: #fcf9f2;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+      color: #3d2314;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- Top Header --- */
+    .header {
+      position: relative;
+      background-color: #3d2314;
+      color: #d6b896;
+      text-align: center;
+      padding: 6px 4px;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .header-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      letter-spacing: 3px;
+      line-height: 1;
+      font-weight: 400;
+    }
+
+    .header-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin-top: 1px;
+      color: #e5d2be;
+    }
+
+    /* ตะกร้าสินค้ามุมขวาบน */
+    .cart-btn {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #e5d2be;
+      display: flex;
+      align-items: center;
+    }
+
+    .cart-icon-wrapper {
+      position: relative;
+      width: 24px;
+      height: 24px;
+    }
+
+    .cart-icon-wrapper svg {
+      width: 100%;
+      height: 100%;
+      fill: none;
+      stroke: #e5d2be;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      background-color: #3d2314;
+      color: #e5d2be;
+      font-family: 'Prompt', sans-serif;
+      font-size: 9px;
+      font-weight: 600;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1px solid #e5d2be;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* --- Section: คิวของคุณ --- */
+    .queue-bar {
+      padding: 10px 16px 6px 16px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 21px;
+      font-weight: 500;
+      color: #5c3422;
+      flex-shrink: 0;
+    }
+
+    .queue-bar span {
+      font-family: 'Playfair Display', serif;
+      font-weight: 600;
+    }
+
+    /* --- Category Navigation Bar --- */
+    .category-nav-wrapper {
+      position: relative;
+      width: 100%;
+      border-bottom: 1.5px solid #dfd7ca;
+      flex-shrink: 0;
+      margin-bottom: 8px;
+    }
+
+    .category-nav {
+      display: flex;
+      gap: 12px;
+      padding: 4px 14px 0px 14px;
+      overflow-x: auto;
+      white-space: nowrap;
+      scroll-behavior: smooth;
+      cursor: grab;
+      user-select: none;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .category-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .category-nav.active-drag {
+      cursor: grabbing;
+    }
+
+    .category-item {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
+      cursor: pointer;
+      padding-bottom: 8px;
+    }
+
+    .category-pill {
+      background-color: #a48b6d;
+      color: #ffffff;
+      font-family: 'Playfair Display', serif;
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 6px 16px;
+      border-radius: 20px;
+      white-space: nowrap;
+      transition: background-color 0.2s ease;
+    }
+
+    .category-subtext {
+      font-family: 'Prompt', sans-serif;
+      font-size: 10px;
+      color: #3d2314;
+      font-weight: 500;
+    }
+
+    .category-item.active .category-pill {
+      background-color: #7b6248;
+    }
+
+    .category-item.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background-color: #5c3422;
+      border-radius: 2px;
+    }
+
+    /* --- Scrollable Menu Area --- */
+    .menu-container {
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 6px 14px 85px 14px;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .menu-container::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .menu-container::-webkit-scrollbar-thumb {
+      background-color: #d6c5b3;
+      border-radius: 4px;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    /* --- กล่องการ์ดเมนูอาหาร --- */
+    .menu-card {
+      background-color: #5c3422;
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      color: #ffffff;
+      height: 395px;
+    }
+
+    .card-img-wrapper {
+      width: 100%;
+      height: 220px;
+      background-color: #3d2314;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .card-img-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .card-body {
+      padding: 10px 10px 12px 10px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .dish-name-en {
+      font-family: 'Playfair Display', serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.25;
+    }
+
+    .dish-name-th {
+      font-family: 'Prompt', sans-serif;
+      font-size: 9.5px;
+      color: #e5d2be;
+      margin-top: 2px;
+      margin-bottom: 6px;
+      font-weight: 400;
+    }
+
+    .dish-desc-th {
+      font-family: 'Prompt', sans-serif;
+      font-size: 8.5px;
+      color: #f7f4ed;
+      line-height: 1.35;
+      opacity: 0.9;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .price-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .btn-add-item {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: #ffffff;
+      font-family: 'Prompt', sans-serif;
+      font-size: 9.5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-add-item:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* ปุ่มปรับจำนวนบนการ์ดเมนู */
+    .qty-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+
+    .btn-qty {
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .btn-qty:hover {
+      color: #e5d2be;
+    }
+
+    .qty-num {
+      font-family: 'Prompt', sans-serif;
+      font-size: 10px;
+      font-weight: 600;
+      color: #ffffff;
+      min-width: 12px;
+      text-align: center;
+    }
+
+    /* --- Bottom Floating Cart Bar --- */
+    .cart-bottom-bar {
+      position: absolute;
+      bottom: 12px;
+      left: 14px;
+      right: 14px;
+      display: flex;
+      gap: 6px;
+      z-index: 10;
+      transform: translateY(80px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.27), opacity 0.3s ease;
+    }
+
+    .cart-bottom-bar.show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .cart-info-box {
+      flex: 1;
+      background-color: #4a2717;
+      color: #ffffff;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn-view-order {
+      background-color: #6e4635;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    /* --- Cart Modal / Drawer --- */
+    .cart-modal {
+      position: absolute;
+      inset: 0;
+      z-index: 100;
+      display: none;
+    }
+
+    .cart-modal.open {
+      display: block;
+    }
+
+    .cart-modal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(2px);
+    }
+
+    .cart-modal-content {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      max-height: 75%;
+      background-color: #fcf9f2;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.2);
+      transform: translateY(100%);
+      transition: transform 0.25s ease-out;
+    }
+
+    .cart-modal.open .cart-modal-content {
+      transform: translateY(0);
+    }
+
+    .cart-modal-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid #dfd7ca;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #3d2314;
+    }
+
+    .cart-modal-header h3 {
+      font-family: 'Prompt', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .btn-close-modal {
+      background: none;
+      border: none;
+      font-size: 18px;
+      color: #8c7355;
+      cursor: pointer;
+    }
+
+    .cart-items-list {
+      padding: 12px 18px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cart-item-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ede4d5;
+    }
+
+    .cart-item-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .cart-item-details {
+      flex: 1;
+    }
+
+    .cart-item-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: #3d2314;
+      line-height: 1.2;
+    }
+
+    .cart-item-price {
+      font-size: 11.5px;
+      color: #7b6248;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .cart-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-qty-ctrl {
+      display: flex;
+      align-items: center;
+      background: #e8e0d2;
+      border-radius: 6px;
+      padding: 2px 6px;
+      gap: 6px;
+    }
+
+    .modal-qty-ctrl button {
+      background: none;
+      border: none;
+      font-size: 13px;
+      font-weight: bold;
+      color: #3d2314;
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+    }
+
+    .modal-qty-num {
+      font-size: 11px;
+      font-weight: 600;
+      color: #3d2314;
+      min-width: 12px;
+      text-align: center;
+    }
+
+    .btn-remove-item {
+      background: none;
+      border: none;
+      color: #a83232;
+      font-size: 15px;
+      cursor: pointer;
+      padding: 2px 4px;
+    }
+
+    .cart-modal-footer {
+      padding: 14px 18px;
+      border-top: 1px solid #dfd7ca;
+      background: #f7f4ed;
+    }
+
+    .cart-modal-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: #3d2314;
+      margin-bottom: 10px;
+    }
+
+    .total-price-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 17px;
+      color: #5c3422;
+      font-weight: 700;
+    }
+
+    .btn-confirm-order {
+      display: block;
+      width: 100%;
+      background-color: #5c3422;
+      color: #ffffff;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      font-family: 'Prompt', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mobile-container">
+    <!-- Header Bar -->
+    <header class="header">
+      <div class="header-brand">
+        <div class="header-title">LUMEN</div>
+        <div class="header-subtitle">Dining</div>
+      </div>
+      <button class="cart-btn" aria-label="Cart" onclick="openCartModal()">
+        <div class="cart-icon-wrapper">
+          <svg viewBox="0 0 24 24">
+            <circle cx="9" cy="20" r="1.5"></circle>
+            <circle cx="18" cy="20" r="1.5"></circle>
+            <path d="M1 2h3.5l2.6 12.3a2 2 0 0 0 2 1.7h9.8a2 2 0 0 0 2-1.6L23 6H6"></path>
+          </svg>
+          <div class="cart-badge" id="topCartBadge">0</div>
+        </div>
+      </button>
+    </header>
+
+    <!-- Queue Bar -->
+    <div class="queue-bar">
+      คิวของคุณ : <span>A-04</span>
+    </div>
+
+    <!-- Category Nav Bar -->
+    <div class="category-nav-wrapper">
+      <div class="category-nav" id="categoryNav">
+        <div class="category-item active" onclick="selectCategory(this, 'all')">
+          <div class="category-pill">All</div>
+          <div class="category-subtext">ทั้งหมด</div>
+        </div>
+        <div class="category-item" onclick="selectCategory(this, 'appetizer')">
+          <div class="category-pill">Appetizers</div>
+          <div class="category-subtext">ทานเล่น</div>
+        </div>
+        <div class="category-item" onclick="selectCategory(this, 'main')">
+          <div class="category-pill">Main course</div>
+          <div class="category-subtext">จานหลัก</div>
+        </div>
+        <div class="category-item" onclick="selectCategory(this, 'steak')">
+          <div class="category-pill">Main steak</div>
+          <div class="category-subtext">สเต๊กพรีเมี่ยม</div>
+        </div>
+        <div class="category-item" onclick="selectCategory(this, 'salad')">
+          <div class="category-pill">Salad</div>
+          <div class="category-subtext">สลัด</div>
+        </div>
+        <div class="category-item" onclick="selectCategory(this, 'dessert')">
+          <div class="category-pill">Dessert</div>
+          <div class="category-subtext">ของหวาน</div>
+        </div>
+        <div class="category-item" onclick="selectCategory(this, 'water')">
+          <div class="category-pill">Water</div>
+          <div class="category-subtext">น้ำ</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Menu Grid Area (21 Cards Total) -->
+    <main class="menu-container" id="menuContainer">
+      <div class="menu-grid">
+        
+        <!-- Card 1: Wagyu Striploin A5 -->
+        <div class="menu-card" data-id="1" data-name-en="Premium Wagyu Striploin A5" data-name-th="สเต๊กวากิว A5 พรีเมี่ยม" data-price="3200" data-img="Premium Wagyu Striploin A5.jpg" data-category="steak">
+          <div class="card-img-wrapper">
+            <img src="Premium Wagyu Striploin A5.jpg" alt="Premium Wagyu Striploin A5">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Premium Wagyu Striploin A5</div>
+              <div class="dish-name-th">สเต๊กวากิว A5 พรีเมี่ยม</div>
+              <div class="dish-desc-th">
+                เนื้อวากิว A5 ย่างเตาถ่านเสิร์ฟกับซอสสูตรพิเศษและทรัฟเฟิลบด
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">3,200฿</span>
+              <div class="action-btn-container" id="action-btn-1"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Seared Scallops with Mango Salsa -->
+        <div class="menu-card" data-id="2" data-name-en="Seared Scallops & Mango Salsa" data-name-th="หอยเชลล์ย่างซอสมะม่วงซัลซ่าสดชื่น" data-price="1850" data-img="Seared Scallops with Mango Salsa.jpg" data-category="appetizer">
+          <div class="card-img-wrapper">
+            <img src="Seared Scallops with Mango Salsa.jpg" alt="Seared Scallops with Mango Salsa">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Seared Scallops & Mango Salsa</div>
+              <div class="dish-name-th">หอยเชลล์ย่างซอสมะม่วงซัลซ่าสดชื่น</div>
+              <div class="dish-desc-th">
+                หอยเชลล์ย่างยักษ์ใหญ่ 3 ตัว พร้อมมะม่วงซัลซ่าหั่นเต๋าเล็กๆ
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">1,850฿</span>
+              <div class="action-btn-container" id="action-btn-2"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Rack of Lamb with Herb Crust -->
+        <div class="menu-card" data-id="3" data-name-en="Herb Crusted Rack of Lamb" data-name-th="ซี่โครงแกะย่างสมุนไพร" data-price="1650" data-img="Rack of Lamb with Herb Crust.jpg" data-category="steak">
+          <div class="card-img-wrapper">
+            <img src="Rack of Lamb with Herb Crust.jpg" alt="Rack of Lamb with Herb Crust">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Herb Crusted Rack of Lamb</div>
+              <div class="dish-name-th">ซี่โครงแกะย่างสมุนไพร</div>
+              <div class="dish-desc-th">
+                ซี่โครงแกะ 3 ชิ้น ราดซอสไวน์แดงเข้มข้น พร้อมการประดับตกแต่งด้วยใบโรสแมรี่สด ไมโครกรีน และกลีบดอกไม้กินได้หลากสี
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">1,650฿</span>
+              <div class="action-btn-container" id="action-btn-3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Wagyu Beef Tartare -->
+        <div class="menu-card" data-id="4" data-name-en="Wagyu Beef Tartare & Truffle" data-name-th="ทาร์ทาร์เนื้อวากิวพรีเมี่ยม" data-price="1250" data-img="Wagyu Beef Tartare.jpg" data-category="appetizer">
+          <div class="card-img-wrapper">
+            <img src="Wagyu Beef Tartare.jpg" alt="Wagyu Beef Tartare">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Wagyu Beef Tartare & Truffle</div>
+              <div class="dish-name-th">ทาร์ทาร์เนื้อวากิวพรีเมี่ยม</div>
+              <div class="dish-desc-th">
+                ปรุงรสด้วยไข่แดงนกกระทาและทรัฟเฟิลสด คลุกเคล้าขนมปังกรอบ
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">1,250฿</span>
+              <div class="action-btn-container" id="action-btn-4"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Truffle Cream Pasta -->
+        <div class="menu-card" data-id="5" data-name-en="Truffle Cream & Mushroom Pasta" data-name-th="พาสต้าซอสครีมทรัฟเฟิลและเห็ดป่า" data-price="890" data-img="Truffle Cream Pasta with Wild Mushrooms.jpg" data-category="main">
+          <div class="card-img-wrapper">
+            <img src="Truffle Cream Pasta with Wild Mushrooms.jpg" alt="Truffle Cream Pasta with Wild Mushrooms">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Truffle Cream & Mushroom Pasta</div>
+              <div class="dish-name-th">พาสต้าซอสครีมทรัฟเฟิลและเห็ดป่า</div>
+              <div class="dish-desc-th">
+                พาสต้าเส้นสดแบบ Tagliatelle คลุกซอสครีมทรัฟเฟิลเข้มข้น ท็อปด้วยเห็ดป่าย่างและทรัฟเฟิลดำสไลซ์
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">890฿</span>
+              <div class="action-btn-container" id="action-btn-5"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: Truffle Mushroom Soup -->
+        <div class="menu-card" data-id="6" data-name-en="Truffle Mushroom Soup" data-name-th="ซุปเห็ดทรัฟเฟิลเข้มข้น" data-price="520" data-img="Truffle Mushroom Soup.jpg" data-category="appetizer">
+          <div class="card-img-wrapper">
+            <img src="Truffle Mushroom Soup.jpg" alt="Truffle Mushroom Soup">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Truffle Mushroom Soup</div>
+              <div class="dish-name-th">ซุปเห็ดทรัฟเฟิลเข้มข้น เสิร์ฟพร้อมขนมปังกรอบ</div>
+              <div class="dish-desc-th">
+                ซุปเห็ดทรัฟเฟิลบดละเอียดกลิ่นหอมอบอวล ตกแต่งด้วยแผ่นทรัฟเฟิลสด และขนมปังย่าง
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">520฿</span>
+              <div class="action-btn-container" id="action-btn-6"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 7: Rich Corn Soup -->
+        <div class="menu-card" data-id="7" data-name-en="Rich Corn Soup & Toast" data-name-th="ซุปข้าวโพดเข้มข้นเสิร์ฟพร้อมขนมปังกรอบ" data-price="450" data-img="Rich corn soup & Crispy bread.jpg" data-category="appetizer">
+          <div class="card-img-wrapper">
+            <img src="Rich corn soup & Crispy bread.jpg" alt="Rich corn soup & Crispy bread">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Rich Corn Soup & Toast</div>
+              <div class="dish-name-th">ซุปข้าวโพดเข้มข้นเสิร์ฟพร้อมขนมปังกรอบ</div>
+              <div class="dish-desc-th">
+                ซุปข้าวโพดหวานเนื้อเนียนละมุน เพิ่มความหอมด้วยข้าวโพดย่างเตาถ่าน และขนมปังอบกรอบ
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">450฿</span>
+              <div class="action-btn-container" id="action-btn-7"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 8: Rich Tomato Soup -->
+        <div class="menu-card" data-id="8" data-name-en="Rich Tomato Soup & Toast" data-name-th="ซุปมะเขือเทศเข้มข้นเสิร์ฟพร้อมขนมปังกรอบ" data-price="420" data-img="Rich tomato soup & Crispy bread.jpg" data-category="appetizer">
+          <div class="card-img-wrapper">
+            <img src="Rich tomato soup & Crispy bread.jpg" alt="Rich tomato soup & Crispy bread">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Rich Tomato Soup & Toast</div>
+              <div class="dish-name-th">ซุปมะเขือเทศเข้มข้นเสิร์ฟพร้อมขนมปังกรอบ</div>
+              <div class="dish-desc-th">
+                ซุปมะเขือเทศสดอบรสเปรี้ยวหวานกลมกล่อม เสิร์ฟพร้อมมะเขือเทศเชอร์รีย่างและขนมปังกรอบ
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">420฿</span>
+              <div class="action-btn-container" id="action-btn-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 9: Valrhona Chocolate Fondant -->
+        <div class="menu-card" data-id="9" data-name-en="Valrhona Chocolate Fondant" data-name-th="ช็อกโกแลตฟองดองต์ลาวา" data-price="480" data-img="Valrhona Chocolate Fondant with Vanilla Gelato.jpg" data-category="dessert">
+          <div class="card-img-wrapper">
+            <img src="Valrhona Chocolate Fondant with Vanilla Gelato.jpg" alt="Valrhona Chocolate Fondant with Vanilla Gelato">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Valrhona Chocolate Fondant</div>
+              <div class="dish-name-th">ช็อกโกแลตฟองดองต์ลาวา เสิร์ฟคู่ไอศกรีมเจลาโตวานิลลามาดากัสการ์</div>
+              <div class="dish-desc-th">
+                เค้กช็อกโกแลตอบร้อนทรงกลมทำจากช็อกโกแลตฝรั่งเศสคุณภาพสูง พร้อมไอศกรีมเจลาโตวานิลลามาดากัสการ์
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">480฿</span>
+              <div class="action-btn-container" id="action-btn-9"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 10: Seasonal Mango & Passionfruit Tart -->
+        <div class="menu-card" data-id="10" data-name-en="Mango & Passionfruit Tart" data-name-th="ทาร์ตมะม่วง & เสาวรสฤดูกาล" data-price="450" data-img="Seasonal Mango & Passionfruit Tart.jpg" data-category="dessert">
+          <div class="card-img-wrapper">
+            <img src="Seasonal Mango & Passionfruit Tart.jpg" alt="Seasonal Mango & Passionfruit Tart">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Mango & Passionfruit Tart</div>
+              <div class="dish-name-th">ทาร์ตมะม่วง & เสาวรสฤดูกาล</div>
+              <div class="dish-desc-th">
+                ทาร์ตกรอบสอดไส้ครีมเสาวรสและมะม่วงสุกแต่งทรงดอกไม้ รสชาติเปรี้ยวหวานลงตัว
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">450฿</span>
+              <div class="action-btn-container" id="action-btn-10"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 11: Pan-seared Diver Scallops -->
+        <div class="menu-card" data-id="11" data-name-en="Pan-seared Diver Scallops" data-name-th="หอยเชลล์ฮอกไกโดย่างกระทะ" data-price="1850" data-img="Pan-seared Diver Scallops.jpg" data-category="appetizer">
+          <div class="card-img-wrapper">
+            <img src="Pan-seared Diver Scallops.jpg" alt="Pan-seared Diver Scallops">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Pan-seared Diver Scallops</div>
+              <div class="dish-name-th">หอยเชลล์ฮอกไกโดย่างกระทะ เสิร์ฟพร้อมซอสบีทรูทและโฟมนม</div>
+              <div class="dish-desc-th">
+                หอยเชลล์ฮอกไกโดตัวยักษ์ย่างกระทะ เสิร์ฟพร้อมซอสบีทรูทพูเร โฟมนมเลมอน และบีทรูทชิปส์
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">1,850฿</span>
+              <div class="action-btn-container" id="action-btn-11"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 12: LUMEN Signature Burrata Salad -->
+        <div class="menu-card" data-id="12" data-name-en="LUMEN Burrata Salad" data-name-th="สลัดบูร์ราตาชีส" data-price="650" data-img="LUMEN Signature Burrata Salad.jpg" data-category="salad">
+          <div class="card-img-wrapper">
+            <img src="LUMEN Signature Burrata Salad.jpg" alt="LUMEN Signature Burrata Salad">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">LUMEN Burrata Salad</div>
+              <div class="dish-name-th">สลัดบูร์ราตาชีส มะเขือเทศออร์แกนิกและซอสบีทรูทบารซามิก</div>
+              <div class="dish-desc-th">
+                ชีสบูร์ราต้าสดเนื้อนุ่ม เสิร์ฟคู่กับมะเขือเทศออร์แกนิกหลากสี ซอสบีทรูท และอิตาเลียนเบซิล
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">650฿</span>
+              <div class="action-btn-container" id="action-btn-12"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 13: Lobster Tail Risotto -->
+        <div class="menu-card" data-id="13" data-name-en="Lobster Tail Risotto" data-name-th="ริซอตโต้กุ้งมังกร" data-price="2400" data-img="Lobster Tail Risotto.jpg" data-category="main">
+          <div class="card-img-wrapper">
+            <img src="Lobster Tail Risotto.jpg" alt="Lobster Tail Risotto">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Lobster Tail Risotto</div>
+              <div class="dish-name-th">ริซอตโต้กุ้งมังกร เสิร์ฟพร้อมซอสบิสค์เข้มข้น</div>
+              <div class="dish-desc-th">
+                ข้าวริซอตโต้ปรุงซอสเข้มข้น ท็อปด้วยหางกุ้งมังกรย่างเนยและพาร์เมซานชีสบ่ม
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">2,400฿</span>
+              <div class="action-btn-container" id="action-btn-13"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 14: Grilled Snow Fish with Saffron Sauce -->
+        <div class="menu-card" data-id="14" data-name-en="Grilled Snow Fish Saffron" data-name-th="ปลาหิมะย่างซอสซัฟฟรอน" data-price="1750" data-img="Grilled Snow Fish with Saffron Sauce.jpg" data-category="main">
+          <div class="card-img-wrapper">
+            <img src="Grilled Snow Fish with Saffron Sauce.jpg" alt="Grilled Snow Fish with Saffron Sauce">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Grilled Snow Fish Saffron</div>
+              <div class="dish-name-th">ปลาหิมะย่างซอสซัฟฟรอน เสิร์ฟพร้อมผักย่าง</div>
+              <div class="dish-desc-th">
+                ปลาหิมะสดชิ้นหนาย่างหนังกรอบ เสิร์ฟพร้อมซอสแซฟฟรอนสีทองและผักย่าง
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">1,750฿</span>
+              <div class="action-btn-container" id="action-btn-14"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 15: Dry-Aged Tenderloin Filet Mignon -->
+        <div class="menu-card" data-id="15" data-name-en="Dry-Aged Filet Mignon" data-name-th="ฟิเลมิยองเนื้อสันในดรายเอจ" data-price="2600" data-img="Dry-Aged Tenderloin Filet Mignon.jpg" data-category="steak">
+          <div class="card-img-wrapper">
+            <img src="Dry-Aged Tenderloin Filet Mignon.jpg" alt="Dry-Aged Tenderloin Filet Mignon">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Dry-Aged Filet Mignon</div>
+              <div class="dish-name-th">ฟิเลมิยองเนื้อสันในดรายเอจ</div>
+              <div class="dish-desc-th">
+                เนื้อสันในดรายเอจนุ่มละมุน ย่างความสุกระดับมิเดียมแรร์ เสิร์ฟคู่มันบดและซอสเรดไวน์
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">2,600฿</span>
+              <div class="action-btn-container" id="action-btn-15"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 16: Duck Breast à l'Orange -->
+        <div class="menu-card" data-id="16" data-name-en="Duck Breast à l'Orange" data-name-th="อกเป็ดอบซอสส้มฝรั่งเศส" data-price="1150" data-img="Duck Breast à l'Orange.jpg" data-category="main">
+          <div class="card-img-wrapper">
+            <img src="Duck Breast à l'Orange.jpg" alt="Duck Breast à l'Orange">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Duck Breast à l'Orange</div>
+              <div class="dish-name-th">อกเป็ดอบซอสส้มฝรั่งเศส และมันฝรั่งบด</div>
+              <div class="dish-desc-th">
+                อกเป็ดคัดพิเศษย่างหนังกรอบ เสิร์ฟคู่มันบด ซอสส้มซิตรัส และเนื้อส้มสด
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">1,150฿</span>
+              <div class="action-btn-container" id="action-btn-16"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 17: Artisanal Cheese Platter -->
+        <div class="menu-card" data-id="17" data-name-en="Artisanal Fine Cheese Platter" data-name-th="พรีเมี่ยมพลาตเตอร์ชีส" data-price="1450" data-img="Artisanal Cheese Platter.jpg" data-category="appetizer">
+          <div class="card-img-wrapper">
+            <img src="Artisanal Cheese Platter.jpg" alt="Artisanal Cheese Platter">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Artisanal Fine Cheese Platter</div>
+              <div class="dish-name-th">พรีเมี่ยมพลาตเตอร์ชีสและผลไม้</div>
+              <div class="dish-desc-th">
+                ชีสบ่มชั้นเลิศหลากชนิด เสิร์ฟพร้อมผลไม้สด ผลไม้อบแห้ง น้ำผึ้งแท้ และแครกเกอร์
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">1,450฿</span>
+              <div class="action-btn-container" id="action-btn-17"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 18: Australia Wagyu Sirloin (MB 4-5) -->
+        <div class="menu-card" data-id="18" data-name-en="Aus Wagyu Sirloin (MB 4-5)" data-name-th="สเต๊กวากิวสันนอกออสเตรเลีย" data-price="2250" data-img="Australia Wagyu Sirloin (MB 4-5).jpg" data-category="steak">
+          <div class="card-img-wrapper">
+            <img src="Australia Wagyu Sirloin (MB 4-5).jpg" alt="Australia Wagyu Sirloin (MB 4-5)">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Aus Wagyu Sirloin (MB 4-5)</div>
+              <div class="dish-name-th">สเต๊กวากิวสันนอกออสเตรเลีย</div>
+              <div class="dish-desc-th">
+                เนื้อวากิวสันนอกออสเตรเลีย ลายหินอ่อนระดับ 4-5 ย่างเตาถ่านเสิร์ฟกับซอสพริกไทยดำ
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">2,250฿</span>
+              <div class="action-btn-container" id="action-btn-18"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 19: Chocolate Fondant with Vanilla Gelato -->
+        <div class="menu-card" data-id="19" data-name-en="Dark Chocolate Fondant" data-name-th="ช็อกโกแลตฟองดองต์ดาร์กเข้มข้น" data-price="460" data-img="Chocolate Fondant with Vanilla Gelato.jpg" data-category="dessert">
+          <div class="card-img-wrapper">
+            <img src="Chocolate Fondant with Vanilla Gelato.jpg" alt="Chocolate Fondant with Vanilla Gelato">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Dark Chocolate Fondant</div>
+              <div class="dish-name-th">ช็อกโกแลตฟองดองต์ดาร์กเข้มข้น</div>
+              <div class="dish-desc-th">
+                ดาร์กช็อกโกแลตฟองดองต์อบสด ไส้ลาวาเยิ้มๆ เสิร์ฟคู่เจลาโต้วานิลลาแท้และเบอร์รี
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">460฿</span>
+              <div class="action-btn-container" id="action-btn-19"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 20: Deconstructed Yuzu Lemon Tart -->
+        <div class="menu-card" data-id="20" data-name-en="Deconstructed Yuzu Tart" data-name-th="ยูซุเลมอนทาร์ตสไตล์ใหม่" data-price="420" data-img="Deconstructed Yuzu Lemon Tart.jpg" data-category="dessert">
+          <div class="card-img-wrapper">
+            <img src="Deconstructed Yuzu Lemon Tart.jpg" alt="Deconstructed Yuzu Lemon Tart">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Deconstructed Yuzu Tart</div>
+              <div class="dish-name-th">ยูซุเลมอนทาร์ตสไตล์ใหม่</div>
+              <div class="dish-desc-th">
+                ทาร์ตเลมอนยูซุถอดโครงสร้าง เสิร์ฟครีมยูซุสดชื่น เมอแร็งก์เบิร์น และไอศกรีม
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">420฿</span>
+              <div class="action-btn-container" id="action-btn-20"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 21: Vanilla Crème Brûlée -->
+        <div class="menu-card" data-id="21" data-name-en="Vanilla Crème Brûlée" data-name-th="เครมบรูเล่วานิลลาแท้" data-price="390" data-img="1794290292951.jpg" data-category="dessert">
+          <div class="card-img-wrapper">
+            <img src="1794290292951.jpg" alt="Vanilla Crème Brûlée">
+          </div>
+          <div class="card-body">
+            <div>
+              <div class="dish-name-en">Vanilla Crème Brûlée</div>
+              <div class="dish-name-th">เครมบรูเล่วานิลลาแท้ & เบอร์รีสด</div>
+              <div class="dish-desc-th">
+                คัสตาร์ดวานิลลาแท้เนื้อเนียนนุ่ม เคลือบน้ำตาลเบิร์นกรอบ ท็อปด้วยมิกซ์เบอร์รีสดหลากชนิด
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="price-text">390฿</span>
+              <div class="action-btn-container" id="action-btn-21"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Bottom Floating Cart Bar (ซ่อนเป็นค่าเริ่มต้น เมื่อยังไม่มีรายการ) -->
+    <div class="cart-bottom-bar" id="cartBottomBar">
+      <div class="cart-info-box" id="bottomCartInfo">
+        0 รายการ | ฿0
+      </div>
+      <button class="btn-view-order" onclick="openCartModal()">
+        ดูรายการที่เลือก &gt;
+      </button>
+    </div>
+
+    <!-- Cart Modal / Drawer -->
+    <div class="cart-modal" id="cartModal">
+      <div class="cart-modal-overlay" onclick="closeCartModal()"></div>
+      <div class="cart-modal-content">
+        <div class="cart-modal-header">
+          <h3>รายการที่เลือก</h3>
+          <button class="btn-close-modal" onclick="closeCartModal()">✕</button>
+        </div>
+        <div class="cart-items-list" id="cartItemsList">
+          <!-- Dynamically filled by JS -->
+        </div>
+        <div class="cart-modal-footer">
+          <div class="cart-modal-total">
+            <span>ราคารวมทั้งหมด</span>
+            <span class="total-price-text" id="modalTotalPrice">฿0</span>
+          </div>
+          <!-- ปุ่มยืนยันการสั่งอาหาร ลิงค์ไปหน้า ยืนยันออเดอร์.html -->
+          <a href="ยืนยันออเดอร์.html" class="btn-confirm-order">ยืนยันการสั่งอาหาร</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /* ===== CART STATE MANAGEMENT ===== */
+    let cart = {};
+
+    function updateQuantity(id, change) {
+      if (!cart[id] && change > 0) {
+        const card = document.querySelector(`.menu-card[data-id="${id}"]`);
+        if (card) {
+          cart[id] = {
+            id: id,
+            nameEn: card.getAttribute('data-name-en'),
+            nameTh: card.getAttribute('data-name-th'),
+            price: parseInt(card.getAttribute('data-price')),
+            qty: 0,
+            img: card.getAttribute('data-img')
+          };
+        }
+      }
+
+      if (cart[id]) {
+        cart[id].qty += change;
+        if (cart[id].qty <= 0) {
+          delete cart[id];
+        }
+      }
+
+      renderCartUI();
+    }
+
+    function removeItem(id) {
+      if (cart[id]) {
+        delete cart[id];
+        renderCartUI();
+      }
+    }
+
+    function renderCartUI() {
+      let totalCount = 0;
+      let totalPrice = 0;
+
+      // Calculate totals
+      Object.values(cart).forEach(item => {
+        totalCount += item.qty;
+        totalPrice += item.price * item.qty;
+      });
+
+      // 1. Update Top Badge & Bottom Info Bar
+      document.getElementById('topCartBadge').innerText = totalCount;
+      document.getElementById('bottomCartInfo').innerText = `${totalCount} รายการ | ฿${totalPrice.toLocaleString()}`;
+      document.getElementById('modalTotalPrice').innerText = `฿${totalPrice.toLocaleString()}`;
+
+      // 2. ซ่อน/แสดง แถบด้านล่าง (Bottom Floating Cart Bar) ตามจำนวนสินค้าในตะกร้า
+      const bottomBar = document.getElementById('cartBottomBar');
+      if (totalCount > 0) {
+        bottomBar.classList.add('show');
+      } else {
+        bottomBar.classList.remove('show');
+        closeCartModal(); // ปิด modal อัตโนมัติหากกดลบรายการออกจนหมด
+      }
+
+      // 3. Update Card Action Buttons
+      const cards = document.querySelectorAll('.menu-card');
+      cards.forEach(card => {
+        const id = card.getAttribute('data-id');
+        const container = document.getElementById(`action-btn-${id}`);
+        if (!container) return;
+
+        const currentQty = cart[id] ? cart[id].qty : 0;
+
+        if (currentQty > 0) {
+          container.innerHTML = `
+            <div class="qty-box">
+              <button class="btn-qty" onclick="updateQuantity('${id}', -1)">-</button>
+              <span class="qty-num">${currentQty}</span>
+              <button class="btn-qty" onclick="updateQuantity('${id}', 1)">+</button>
+            </div>
+          `;
+        } else {
+          container.innerHTML = `
+            <button class="btn-add-item" onclick="updateQuantity('${id}', 1)">+ เพิ่ม</button>
+          `;
+        }
+      });
+
+      // 4. Render Cart Modal Items List
+      const cartList = document.getElementById('cartItemsList');
+      if (Object.keys(cart).length === 0) {
+        cartList.innerHTML = `<div style="text-align:center; color:#8c7355; padding:30px 0; font-size:13px;">ไม่มีรายการอาหารในตะกร้า</div>`;
+      } else {
+        cartList.innerHTML = Object.values(cart).map(item => `
+          <div class="cart-item-row">
+            <img src="${item.img}" alt="${item.nameEn}" class="cart-item-img">
+            <div class="cart-item-details">
+              <div class="cart-item-title">${item.nameEn}</div>
+              <div class="cart-item-price">฿${item.price.toLocaleString()}</div>
+            </div>
+            <div class="cart-item-actions">
+              <div class="modal-qty-ctrl">
+                <button onclick="updateQuantity('${item.id}', -1)">-</button>
+                <span class="modal-qty-num">${item.qty}</span>
+                <button onclick="updateQuantity('${item.id}', 1)">+</button>
+              </div>
+              <button class="btn-remove-item" onclick="removeItem('${item.id}')" title="ลบรายการ">🗑️</button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    /* Modal Controls */
+    function openCartModal() {
+      if (Object.keys(cart).length > 0) {
+        document.getElementById('cartModal').classList.add('open');
+      }
+    }
+
+    function closeCartModal() {
+      document.getElementById('cartModal').classList.remove('open');
+    }
+
+    /* ===== NAVIGATION & DRAG CONTROLS ===== */
+    const categoryNav = document.getElementById('categoryNav');
+    let isNavDown = false;
+    let startX;
+    let scrollLeft;
+
+    categoryNav.addEventListener('mousedown', (e) => {
+      isNavDown = true;
+      categoryNav.classList.add('active-drag');
+      startX = e.pageX - categoryNav.offsetLeft;
+      scrollLeft = categoryNav.scrollLeft;
+    });
+
+    categoryNav.addEventListener('mouseleave', () => {
+      isNavDown = false;
+      categoryNav.classList.remove('active-drag');
+    });
+
+    categoryNav.addEventListener('mouseup', () => {
+      isNavDown = false;
+      categoryNav.classList.remove('active-drag');
+    });
+
+    categoryNav.addEventListener('mousemove', (e) => {
+      if (!isNavDown) return;
+      e.preventDefault();
+      const x = e.pageX - categoryNav.offsetLeft;
+      const walk = (x - startX) * 2;
+      categoryNav.scrollLeft = scrollLeft - walk;
+    });
+
+    function selectCategory(element, category) {
+      const items = document.querySelectorAll('.category-item');
+      items.forEach(item => item.classList.remove('active'));
+      element.classList.add('active');
+
+      element.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest'
+      });
+
+      const cards = document.querySelectorAll('.menu-card');
+      cards.forEach(card => {
+        const cardCat = card.getAttribute('data-category');
+        if (category === 'all' || !category) {
+          card.style.display = 'flex';
+        } else if (cardCat === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    /* Menu Vertical Drag Scroll */
+    const menuContainer = document.getElementById('menuContainer');
+    let isMenuDown = false;
+    let startY;
+    let scrollTop;
+
+    menuContainer.addEventListener('mousedown', (e) => {
+      isMenuDown = true;
+      startY = e.pageY - menuContainer.offsetTop;
+      scrollTop = menuContainer.scrollTop;
+    });
+
+    menuContainer.addEventListener('mouseleave', () => {
+      isMenuDown = false;
+    });
+
+    menuContainer.addEventListener('mouseup', () => {
+      isMenuDown = false;
+    });
+
+    menuContainer.addEventListener('mousemove', (e) => {
+      if (!isMenuDown) return;
+      e.preventDefault();
+      const y = e.pageY - menuContainer.offsetTop;
+      const walk = (y - startY) * 1.5;
+      menuContainer.scrollTop = scrollTop - walk;
+    });
+
+    // Initialize UI on page load
+    renderCartUI();
+  </script>
+
+</body>
+</html>

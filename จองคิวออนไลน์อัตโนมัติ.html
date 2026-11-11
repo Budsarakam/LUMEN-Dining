@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUMEN Dining - รับคิวออนไลน์</title>
+  
+  <!-- Google Fonts: Playfair Display & Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #f7f4ed;
+      font-family: 'Prompt', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .mobile-container {
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      height: 100dvh;
+      background-color: #fcf9f2;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+      color: #3d2314;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Bar */
+    .header {
+      background-color: #3d2314;
+      color: #e5d2be;
+      text-align: center;
+      padding: 6px 0 4px 0;
+      flex-shrink: 0;
+    }
+
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      letter-spacing: 3px;
+      line-height: 1;
+      font-weight: 400;
+    }
+
+    .header-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin-top: 1px;
+      color: #e5d2be;
+    }
+
+    /* Main Content Container */
+    .content {
+      padding: 12px 18px 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .title-section {
+      text-align: left;
+      margin-bottom: 2px;
+      flex-shrink: 0;
+    }
+
+    .page-title {
+      font-family: 'Prompt', sans-serif;
+      font-size: 25px;
+      font-weight: 700;
+      color: #3d2314;
+      line-height: 1.15;
+    }
+
+    .page-subtitle {
+      font-family: 'Prompt', sans-serif;
+      font-size: 11.5px;
+      color: #6e5448;
+      margin-top: 1px;
+    }
+
+    /* Outer Form Card */
+    .form-card {
+      border: 1.5px solid #3d2314;
+      padding: 16px 16px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+      min-height: 0;
+      background-color: transparent;
+    }
+
+    .form-header-title {
+      font-family: 'Prompt', sans-serif;
+      font-size: 27px;
+      font-weight: 700;
+      color: #3d2314;
+      margin-bottom: 6px;
+      line-height: 1.1;
+    }
+
+    .field-label {
+      font-family: 'Prompt', sans-serif;
+      font-size: 13.5px;
+      color: #3d2314;
+      font-weight: 500;
+      margin-bottom: 6px;
+      margin-top: 10px;
+    }
+
+    .field-label .en-sub {
+      font-family: 'Playfair Display', serif;
+      font-size: 13.5px;
+    }
+
+    /* Guest Options */
+    .guest-options {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .guest-btn {
+      flex: 1;
+      border: 1.5px solid #3d2314;
+      border-radius: 20px;
+      padding: 9px 0;
+      text-align: center;
+      font-family: 'Prompt', sans-serif;
+      font-size: 12.5px;
+      font-weight: 500;
+      color: #3d2314;
+      background: transparent;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .guest-btn.active {
+      background-color: #3d2314;
+      color: #fcf9f2;
+    }
+
+    .seat-options {
+      display: flex;
+      width: 100%;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      margin-bottom: 68px; 
+      padding: 0 18px;
+    }
+
+    .seat-radio-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: #3d2314;
+    }
+
+    .seat-radio-label input[type="radio"] {
+      display: none;
+    }
+
+    .radio-dot {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background-color: #e5d7c3;
+      display: inline-block;
+      flex-shrink: 0;
+      border: 1.5px solid #3d2314;
+      transition: background-color 0.15s ease;
+    }
+
+    .seat-radio-label input[type="radio"]:checked + .radio-dot {
+      background-color: #9e2a1b;
+      border-color: #9e2a1b;
+    }
+
+    /* Input Fields */
+    .input-group {
+      margin-bottom: 8px;
+    }
+
+    .custom-input {
+      width: 100%;
+      border: 1.5px solid #3d2314;
+      border-radius: 25px;
+      padding: 10px 18px;
+      font-family: 'Playfair Display', serif;
+      font-size: 16px;
+      color: #3d2314;
+      background: transparent;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .custom-input::placeholder {
+      color: #b5a999;
+      font-family: 'Playfair Display', serif;
+    }
+
+    .custom-input.error {
+      border-color: #a83232;
+    }
+
+    /* Checkbox */
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 12px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border: 1.2px solid #3d2314;
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .checkbox-container input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      font-size: 11px;
+      top: -3px;
+      left: 2px;
+      color: #3d2314;
+    }
+
+    .checkbox-text {
+      font-family: 'Prompt', sans-serif;
+      font-size: 11px;
+      color: #3d2314;
+      font-weight: 400;
+    }
+
+    /* Action Group */
+    .action-group {
+      transform: none;
+      margin-top: auto;
+      padding-top: 10px;
+    }
+
+    .btn-submit {
+      display: block;
+      width: 100%;
+      background-color: #e8ded1;
+      color: #3d2314;
+      border: none;
+      border-radius: 25px;
+      padding: 12px 0;
+      font-family: 'Prompt', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: transform 0.1s ease;
+    }
+
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+
+    .btn-cancel {
+      display: block;
+      text-align: center;
+      font-family: 'Prompt', sans-serif;
+      font-size: 11.5px;
+      color: #3d2314;
+      text-decoration: underline;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mobile-container">
+    <!-- Header Bar -->
+    <header class="header">
+      <div class="header-title">LUMEN</div>
+      <div class="header-subtitle">Dining</div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="content">
+      <!-- Title Section -->
+      <div class="title-section">
+        <h1 class="page-title">รับคิวออนไลน์</h1>
+        <p class="page-subtitle">กรอกข้อมูลเพื่อรับบัตรคิว</p>
+      </div>
+
+      <!-- Outer Bordered Form Box -->
+      <div class="form-card">
+        <div>
+          <h2 class="form-header-title">ข้อมูลการจองคิว</h2>
+
+          <!-- จำนวนผู้ให้บริการ (Guests) -->
+          <div class="field-label">
+            จำนวนผู้ให้บริการ <span class="en-sub">(Guests)</span>
+          </div>
+          <div class="guest-options">
+            <button type="button" class="guest-btn active">1-2 คน</button>
+            <button type="button" class="guest-btn">3-4 คน</button>
+            <button type="button" class="guest-btn">5 คนขึ้นไป</button>
+          </div>
+
+          <!-- โซนที่นั่งที่ต้องการ (Seating area) -->
+          <div class="field-label">
+            โซนที่นั่งที่ต้องการ <span class="en-sub">(Seating area)</span>
+          </div>
+          <div class="seat-options">
+            <label class="seat-radio-label">
+              <input type="radio" name="seating" value="indoor" checked>
+              <span class="radio-dot"></span> Indoor
+            </label>
+            <label class="seat-radio-label">
+              <input type="radio" name="seating" value="outdoor">
+              <span class="radio-dot"></span> Outdoor
+            </label>
+            <label class="seat-radio-label">
+              <input type="radio" name="seating" value="bar">
+              <span class="radio-dot"></span> Bar
+            </label>
+          </div>
+
+          <!-- ชื่อผู้จอง (Name) -->
+          <div class="input-group">
+            <div class="field-label">
+              ชื่อผู้จอง <span class="en-sub">(Name)</span>
+            </div>
+            <input type="text" id="nameInput" class="custom-input" placeholder="Name">
+          </div>
+
+          <!-- เบอร์โทรศัพท์ (phone) -->
+          <div class="input-group">
+            <div class="field-label">
+              เบอร์โทรศัพท์ <span class="en-sub">(phone)</span>
+            </div>
+            <input type="tel" id="phoneInput" class="custom-input" placeholder="Phone" maxlength="10">
+          </div>
+
+          <!-- Checkbox ยืนยัน -->
+          <label class="checkbox-container">
+            <input type="checkbox" id="smsCheckbox" checked>
+            <span class="checkbox-text">ฉันยอมรับการรับแจ้งเตือนสถานะคิวผ่าน SMS</span>
+          </label>
+        </div>
+
+        <!-- Submit & Cancel Buttons -->
+        <div class="action-group">
+          <!-- ปุ่มยืนยัน -> ไปหน้าหมายเลขจองคิว -->
+          <a href="หมายเลขจองคิว.html" id="btnSubmit" class="btn-submit">ยืนยันการจองคิวออนไลน์</a>
+          <!-- ปุ่มยกเลิก -> กลับหน้าจองคิวออนไลน์อัตโนมัติ -->
+          <a href="จองคิวออนไลน์อัตโนมัติ.html" class="btn-cancel">ยกเลิก</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // สคริปต์สลับสถานะปุ่มจำนวนผู้ใช้บริการ
+    document.querySelectorAll('.guest-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.guest-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    const nameInput = document.getElementById('nameInput');
+    const phoneInput = document.getElementById('phoneInput');
+    const smsCheckbox = document.getElementById('smsCheckbox');
+    const btnSubmit = document.getElementById('btnSubmit');
+
+    // กรองตอนพิมพ์ชื่อ: ให้พิมพ์ได้เฉพาะตัวอักษรไทย อังกฤษ และช่องว่างเท่านั้น
+    nameInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^a-zA-Zก-๙\s]/g, '');
+      this.classList.remove('error');
+    });
+
+    // กรองตอนพิมพ์เบอร์โทร: พิมพ์ได้เฉพาะตัวเลข และไม่เกิน 10 หลัก
+    phoneInput.addEventListener('input', function() {
+      this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+      this.classList.remove('error');
+    });
+
+    // ตรวจสอบความถูกต้องของข้อมูลก่อนยืนยันจองคิว
+    btnSubmit.addEventListener('click', function(e) {
+      const nameVal = nameInput.value.trim();
+      const phoneVal = phoneInput.value.trim();
+      let errorMessage = '';
+
+      nameInput.classList.remove('error');
+      phoneInput.classList.remove('error');
+
+      // 1. ตรวจสอบชื่อ (ห้ามว่าง และต้องเป็นตัวอักษรไทย/อังกฤษเท่านั้น)
+      const nameRegex = /^[a-zA-Zก-๙\s]+$/;
+      if (nameVal === '') {
+        nameInput.classList.add('error');
+        errorMessage = 'กรุณากรอกชื่อผู้จอง';
+      } else if (!nameRegex.test(nameVal)) {
+        nameInput.classList.add('error');
+        errorMessage = 'ชื่อผู้จองต้องเป็นพยัญชนะภาษาไทยหรือภาษาอังกฤษเท่านั้น';
+      }
+
+      // 2. ตรวจสอบเบอร์โทรศัพท์ (ต้องเป็นตัวเลข 10 หลัก ขึ้นต้นด้วย 0)
+      const phoneRegex = /^0[0-9]{9}$/;
+      if (phoneVal === '') {
+        phoneInput.classList.add('error');
+        if (!errorMessage) errorMessage = 'กรุณากรอกเบอร์โทรศัพท์';
+      } else if (!phoneRegex.test(phoneVal)) {
+        phoneInput.classList.add('error');
+        if (!errorMessage) errorMessage = 'กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง (ต้องเป็นตัวเลข 10 หลักขึ้นต้นด้วย 0)';
+      }
+
+      // 3. ตรวจสอบการกดยินยอม SMS
+      if (!smsCheckbox.checked) {
+        if (!errorMessage) errorMessage = 'กรุณายินยอมรับการแจ้งเตือนสถานะคิวผ่าน SMS';
+      }
+
+      // หากไม่ผ่านเงื่อนไข ให้ระงับการเปลี่ยนหน้าและแจ้งเตือน
+      if (errorMessage) {
+        e.preventDefault();
+        alert(errorMessage);
+      }
+    });
+  </script>
+
+</body>
+</html>

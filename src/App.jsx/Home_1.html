@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>BUDSARAKAM.S</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&family=Itim&display=swap" rel="stylesheet">
+
+<style>
+
+/* ================= GLOBAL ================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background-color:#ffc3e1;
+    font-family:"Baloo 2", sans-serif;
+
+    width:100%;
+
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    overflow-x:hidden;
+    background:
+      radial-gradient(circle at top,#fff0f7 0%,#fec6dd 100%);
+    position:relative;
+    padding-bottom:43px;
+}
+
+/* ================= HEADER ================= */
+
+.header-container{
+    padding:45px 40px 0;
+    /* ปรับค่า z-index ของเฮดเดอร์ให้ต่ำกว่าเนื้อหาหลักเล็กน้อย เพื่อยอมให้รูปภาพที่ลอยขึ้นมาสามารถทับได้ */
+    z-index:5;
+}
+
+.header-main{
+    width:100%;
+    max-width:1400px;
+    margin:0 auto;
+
+    background:rgba(255,255,255,0.6);
+
+    border:3px dashed #f9cbd5;
+    border-radius:65px;
+
+    padding:28px 70px;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    box-shadow:
+      0 12px 35px rgba(255,182,193,0.15);
+}
+
+.title-text{
+    font-size:65px;
+    line-height:0.8;
+    color:#e57a91;
+    font-weight:700;
+    letter-spacing:-1px;
+}
+
+.subtitle-text{
+    font-size:26px;
+    color:#a38b81;
+    margin-top:5px;
+    font-weight:500;
+}
+
+.post-it{
+    background:#fffcf9;
+    border:2px solid #f9cbd5;
+    border-radius:18px;
+
+    padding:12px 35px;
+
+    text-align:center;
+    color:#a38b81;
+
+    position:relative;
+    font-size:19px;
+}
+
+.paper-clip{
+    position:absolute;
+    top:-15px;
+    right:25px;
+
+    width:12px;
+    height:30px;
+
+    border:3px solid #b79a8f;
+    border-bottom:none;
+
+    border-radius:10px 10px 0 0;
+}
+
+/* ================= MAIN ================= */
+
+.main-content{
+    margin-top:110px;
+
+    width:100%;
+    max-width:1400px;
+
+    margin-left:auto;
+    margin-right:auto;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+
+    /* เพิ่ม z-index ให้คอนเทนเนอร์หลักของรูปภาพอยู่สูงกว่าเฮดเดอร์ เพื่อให้ทะลุไปทับด้านบนได้ */
+    z-index:10;
+
+    min-height:600px;
+
+    padding:0 80px;
+}
+
+/* ================= FOLDERS ================= */
+
+.folder-grid{
+    width:700px;
+
+    display:flex;
+    flex-wrap:wrap;
+
+    gap:90px 80px;
+
+    align-items:flex-start;
+}
+
+.folder-card{
+    position:relative;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    transition:.25s;
+    cursor:pointer;
+}
+
+.folder-card:hover{
+    transform:translateY(-5px) scale(1.02);
+}
+
+/* แก้ไขดีไซน์ตัวโฟลเดอร์หลักให้ตรงตามรูปภาพตัวอย่างแรกเป๊ะๆ */
+.folder{
+    width:100px;
+    height:78px;
+
+    background:
+      linear-gradient(to bottom,
+      #ffb3cb,
+      #ff88b9);
+
+    border-radius:10px;
+    position:relative;
+
+    box-shadow:
+      0 5px 12px rgba(229,151,177,.3);
+
+    /* เว้นพื้นที่ด้านบนสำหรับทำช่องเจาะยาว */
+    margin-top: 12px;
+    border-top: 12px solid transparent;
+}
+
+/* หัวปีกโฟลเดอร์ด้านหลัง ตัดมุมเฉียงลาดลงตามรูปแบบที่ 1 */
+.folder::before{
+    content:'';
+    position:absolute;
+    top:-22px; 
+    left:0px;
+    width:46px;
+    height:14px;
+    background:#ffb3cb;
+    /* ใช้ clip-path เพื่อตัดมุมขวาให้เอียงลาดลงตามต้นฉบับ */
+    clip-path: polygon(0 0, 78% 0, 100% 100%, 0 100%);
+    border-radius:5px 0 0 0;
+    z-index:1;
+}
+
+/* สร้างกระดาษสีขาวและช่องเจาะยาวโปร่งแสงด้านบนโฟลเดอร์ */
+.folder::after{
+    content:'';
+    position:absolute;
+    top:-12px;
+    left:4px;
+    right:4px;
+    height:8px;
+    background: #ffffff;
+    border-radius: 4px 4px 0 0;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.04);
+    z-index:2;
+}
+
+/* จัดตำแหน่งอิโมจิให้อยู่กึ่งกลางตัวโฟลเดอร์พอดี ไม่เบี้ยว */
+.folder-icon{
+    position:absolute;
+    left:50%;
+    top:55%;
+    transform:translate(-50%,-50%);
+    font-size:28px; 
+    z-index:10;
+     
+    line-height:1 !important;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    width:36px;
+    height:36px;
+}
+
+.folder-title{
+    margin-top:14px;
+    font-size:15px;
+    color:#6f584f;
+    font-weight:600;
+    letter-spacing:0.5px;
+}
+
+/* ================= PHOTO ================= */
+/* [ขยายขนาดรูปภาพสำหรับหน้าจอใหญ่ Desktop / Notebook] */
+.photo-slot{
+    width:340px;          /* ขยายความกว้างรูปภาพเพิ่มขึ้นจากเดิม (580px) */
+    position:absolute;
+    right:155px;         /* ปรับระยะเยื้องขวาเล็กน้อยเพื่อรองรับขนาดที่ใหญ่ขึ้น ไม่ให้ชนโฟลเดอร์ */
+    top: 180px;            /* คุมระดับให้อยู่ต่ำกำลังพอดี */
+    z-index:40;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+
+    margin-right:40px;
+    transform:none;
+    max-width:100%;
+}
+
+.profile-image-container{
+    position:relative;
+    width:100%;
+}
+
+.profile-image{
+    width:100%;
+    height:auto;
+
+    display:block;
+
+    filter:
+      drop-shadow(
+      0px 10px 20px rgba(229,122,145,0.2));
+}
+
+.image-deco{
+    position:absolute;
+
+    color:#e57a91;
+
+    font-size:26px;
+
+    opacity:0.85;
+
+    z-index:45;
+}
+
+/* ================= FOOTER ================= */
+
+.footer{
+    width:85%;
+    height:165px;
+
+    transform:scale(0.9);
+
+    margin:-10px auto 0 auto;
+
+    background:
+      linear-gradient(to top,#89a34f,#adc66a);
+
+    border-radius:40px;
+
+    border:3px dashed #f7e6c7;
+
+    position:relative;
+
+    overflow:hidden;
+
+    box-shadow:
+      0 10px 20px rgba(137,163,79,.25),
+      inset 0 2px 3px rgba(255,255,255,.5);
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    max-width:100%;
+}
+
+.footer h1{
+    font-family:'Baloo 2', cursive;
+
+    font-size:52px;
+
+    color:#fff9ef;
+
+    line-height:1;
+
+    text-shadow:
+      0 3px 5px rgba(0,0,0,.08);
+}
+
+.footer p{
+    margin-top:8px;
+
+    font-size:28px;
+
+    color:#fffaf4;
+}
+
+.grass-bg{
+    position:absolute;
+
+    left:0;
+    bottom:-7px;
+
+    width:100%;
+    height:390px;
+
+    overflow:hidden;
+}
+
+.grass-bg img{
+    width:100%;
+    height:100%;
+
+    display:block;
+
+    object-fit:cover;
+}
+
+/* ================= FLOWERS ================= */
+
+.flower{
+    position:absolute;
+    border-radius:50%;
+    background:white;
+}
+
+/* แก้ไขระยะห่างของ box-shadow ให้กระจายตัวเป็นวงกลมเดี่ยวเรียงกันสวยงาม ไม่ซ้อนกันมั่ว */
+.flower1{
+    width:16px;
+    height:16px;
+
+    left:70px;
+    bottom:40px;
+
+    box-shadow:
+      24px 0 0 0 #f7d86a,
+      48px 0 0 0 #fff,
+      72px 0 0 0 #ff9ac2,
+      96px 0 0 0 #fff;
+}
+
+/* แก้ไขระยะห่างของ box-shadow ให้กระจายตัวเป็นวงกลมเดี่ยวเรียงกันสวยงาม ไม่ซ้อนกันมั่ว */
+.flower2{
+    width:14px;
+    height:14px;
+
+    right:90px;
+    bottom:55px;
+
+    box-shadow:
+      -22px 0 0 0 #ffb5ce,
+      -44px 0 0 0 #fff,
+      -66px 0 0 0 #ffd782,
+      -88px 0 0 0 #fff;
+}
+
+/* ================= DECOR ================= */
+
+.heart{
+    position:absolute;
+
+    color:#ff9cbc;
+
+    font-size:28px;
+}
+
+.h1{
+    top:180px;
+    left:160px;
+}
+
+.h2{
+    top:250px;
+    left:850px;
+}
+
+.h3{
+    bottom:210px;
+    right:380px;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1350px){
+    .photo-slot{
+        width: 580px;      /* ปรับไล่ระดับลงมาเมื่อจอเล็กลงมานิดหน่อย */
+        right: -30px;
+        top: 60px;
+    }
+}
+
+@media (max-width: 1250px){
+    .photo-slot{
+        width: 500px;
+        top: 80px;
+        right: -20px;
+    }
+    .folder-grid{
+        width: 55%;
+    }
+}
+
+@media (max-width: 1100px){
+
+    .main-content{
+        padding:0 40px;
+    }
+
+    .folder-grid{
+        width:55%;
+        gap:70px 40px;
+    }
+
+    .photo-slot{
+        width:430px;
+        right:-30px;
+        top:100px;
+    }
+
+}
+
+/* TABLET */
+
+@media (max-width: 850px){
+
+    .header-main{
+        flex-direction:column;
+        gap:25px;
+        text-align:center;
+
+        padding:35px;
+    }
+
+    .title-text{
+        font-size:52px;
+    }
+
+    .subtitle-text{
+        font-size:22px;
+    }
+
+    .main-content{
+        flex-direction:column;
+        align-items:center;
+
+        padding:0 20px;
+
+        min-height:auto;
+    }
+
+    .folder-grid{
+        width:100%;
+        justify-content:center;
+
+        gap:55px 40px;
+
+        z-index:5;
+    }
+
+    .photo-slot{
+
+    position:relative;
+
+    width:320px;
+
+    right:auto;
+
+    top:auto;
+
+    margin:30px auto 0;
+
+    transform:none;
+
+    display:flex;
+
+    justify-content:center;
+    }
+
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width:700px){
+
+html,
+body{
+    overflow-x:hidden;
+}
+
+/* ---------- HEADER ---------- */
+
+.header-container{
+    padding:18px 14px 0;
+    /* ปรับปรุงลำดับชั้นของเฮดเดอร์บนเวอร์ชันมือถือด้วยเช่นกัน */
+    z-index: 5;
+}
+
+.header-main{
+
+    width:100%;
+
+    padding:22px 18px;
+
+    border-radius:30px;
+
+    flex-direction:column;
+
+    text-align:center;
+
+    gap:16px;
+
+    background:rgba(255,255,255,0.58);
+
+    backdrop-filter:blur(10px);
+}
+
+.title-text{
+
+    font-size:34px;
+
+    line-height:0.9;
+
+    letter-spacing:-0.5px;
+}
+
+.subtitle-text{
+
+    font-size:15px;
+
+    margin-top:6px;
+}
+
+.post-it{
+
+    width:100%;
+
+    max-width:240px;
+
+    padding:10px 16px;
+
+    font-size:14px;
+
+    line-height:1.5;
+
+    border-radius:16px;
+}
+
+.paper-clip{
+
+    width:10px;
+
+    height:24px;
+
+    top:-12px;
+}
+
+/* ---------- MAIN ---------- */
+
+.main-content{
+
+    width:100%;
+
+    margin-top: 15px;
+
+    padding:0 20px 80px;
+
+    position:relative;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:flex-start;
+
+    /* จุดแก้ที่ 1: ยกเลิกการซ่อนขอบล้นบนมือถือ เพื่อไม่ให้ส่วนหัวของรูปภาพโดนตัดขาดเป็นเส้นตรง */
+    overflow: visible; 
+    
+    /* ดันลำดับความสำคัญในสเตจหลักให้แสดงเหนือตัวอื่น */
+    z-index: 10;
+}
+
+/* ---------- GRID ---------- */
+
+.folder-grid{
+
+    width:62%;
+
+    display:grid;
+
+    grid-template-columns:repeat(2,1fr);
+
+    gap:38px 12px;
+
+    position:relative;
+
+    z-index:5;
+
+    justify-items:start;
+}
+
+
+/* ---------- FOLDER MOBILE ---------- */
+
+.folder {
+    width: 70px;
+    height: 54px;
+    border-radius: 8px;
+    position: relative;
+    background: linear-gradient(to bottom, lab(71.16% 50.63 -5.6), lab(65.43% 58.01 -4.58));
+    box-shadow:
+      0 3px 8px rgba(229,151,177,.25);
+    margin-top: 8px;
+    border-top: 8px solid transparent;
+}
+
+.folder::before {
+    content:'';
+    position: absolute;
+    top: -15px;
+    left: 0px;
+    width: 32px;
+    height: 10px;
+    background: lab(67.31% 58.19 -4.55);
+    clip-path: polygon(0 0, 78% 0, 100% 100%, 0 100%);
+    border-radius: 4px 0 0 0;
+    z-index: 1;
+}
+
+.folder::after {
+    content:'';
+    position: absolute;
+    top: -8px;
+    left: 3px;
+    right: 3px;
+    height: 6px;
+    background: #ffffff;
+    border-radius: 3px 3px 0 0;
+    z-index: 2;
+}
+
+.folder-icon {
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    z-index: 10;
+    line-height: 1 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 24px;
+    height: 24px;
+}
+
+.folder-title{
+
+    margin-top:10px;
+
+    font-size:9px;
+
+    line-height:1.3;
+
+    text-align:left;
+
+    color:#6f584f;
+}
+
+/* ---------- PHOTO ---------- */
+
+.photo-slot{
+
+    position:absolute;
+
+    width:410px;
+
+    right:-130px;
+
+    top:-155px;
+
+    transform:none;
+
+    /* จุดแก้ที่ 2: ดันลำดับ z-index ของรูปภาพให้ขึ้นมาอยู่เหนือกรอบสีชมพู จะได้ไม่เกิดอาการโดนตัดทับหัว */
+    z-index: 40; 
+}
+
+.profile-image{
+
+    width:100%;
+
+    height:auto;
+
+    display:block;
+
+    filter:
+      drop-shadow(
+      0 10px 20px rgba(229,122,145,0.2));
+}
+
+.image-deco{
+
+    font-size:20px;
+}
+
+/* ---------- GRASS ---------- */
+
+.grass-bg{
+
+    position:absolute;
+    pointer-events:none;
+
+
+    left:0;
+
+    bottom:-10px;
+
+    width:100%;
+
+    height: 295px; /* แก้ไขส่วนนี้จาก 255px เป็น 295px เพื่อเพิ่มความสูงเนินหญ้าเฉพาะบนมือถือ */
+
+    overflow:hidden;
+
+    z-index:1;
+}
+
+.grass-bg img{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+    object-position:center bottom;
+}
+
+/* ---------- FOOTER ---------- */
+
+.footer{
+    width: 90%;
+    height: auto;
+    margin: 20px auto 0;
+    padding: 24px 16px;
+    background: linear-gradient(to top, #89a34f, #adc66a);
+    border-radius: 25px;
+    border: 2px solid #ffffff;
+    box-shadow: none;
+    transform: none;
+    position: relative;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.footer h1{
+    font-size: 20px;
+    color: #ffffff;
+    text-align: center;
+    text-shadow: none;
+    font-weight: 600;
+}
+
+.footer p{
+    font-size: 13px;
+    color: #ffffff;
+    margin-top: 0;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+/* ลบเงาดอกไม้แบบเก่าออก และทำปุ่มวงกลมหลากสีตรงกลางตามรูปแบบที่ 2 */
+.footer1,
+.footer2 {
+    display: none;
+}
+
+.footer-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    margin: 2px 0;
+}
+
+.dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+}
+.dot.w1 { background-color: #ffffff; }
+.dot.y1 { background-color: #f7d663; }
+.dot.g1 { background-color: #e2ecc8; }
+.dot.p1 { background-color: #fca1c1; }
+.dot.w2 { background-color: #ffffff; }
+.dot.o1 { background-color: #fcae6d; }
+.dot.g2 { background-color: #cbdca3; }
+.dot.p2 { background-color: #f7669d; }
+
+/* ---------- DECOR ---------- */
+
+.h1,
+.h2,
+.h3{
+    display:none;
+}
+
+/* ---------- FIX IMAGE ---------- */
+
+img{
+    max-width:100%;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header-container">
+
+    <header class="header-main">
+
+        <div class="header-left">
+            <h1 class="title-text">BUDSARAKAM.S</h1>
+
+            <p class="subtitle-text">
+                Portfolio & Collections 🌸
+            </p>
+        </div>
+
+        <div class="post-it">
+
+            <div class="paper-clip"></div>
+
+            collect my works,<br>
+            growing every day 💗
+
+        </div>
+
+    </header>
+
+</div>
+
+<div class="main-content">
+
+    <div class="folder-grid">
+
+        <div class="folder-card">
+            <div class="folder">
+                <div class="folder-icon">🪪</div>
+            </div>
+            <div class="folder-title">01_internship</div>
+        </div>
+
+        <div class="folder-card">
+            <div class="folder">
+                <div class="folder-icon">💻</div>
+            </div>
+            <div class="folder-title">02_website</div>
+        </div>
+
+        <div class="folder-card">
+            <div class="folder">
+                <div class="folder-icon">🎨</div>
+            </div>
+            <div class="folder-title">03_design</div>
+        </div>
+
+        <div class="folder-card">
+            <div class="folder">
+                <div class="folder-icon">📋</div>
+            </div>
+            <div class="folder-title">04_skill</div>
+        </div>
+
+        <a href="" style="text-decoration: none;color: inherit;">
+        <div class="folder-card">
+            <div class="folder">
+                <div class="folder-icon">📁</div>
+            </div>
+            <div class="folder-title">05_project</div>
+        </div>
+
+        <div class="folder-card">
+            <div class="folder">
+                <div class="folder-icon">📸</div>
+            </div>
+            <div class="folder-title">06_gallery</div>
+        </div>
+
+        <div class="folder-card">
+            <div class="folder">
+                <div class="folder-icon">✨</div>
+            </div>
+            <div class="folder-title">07_extra</div>
+        </div>
+
+        <div class="folder-card">
+            <div class="folder">
+                <div class="folder-icon">🌟</div>
+            </div>
+            <div class="folder-title">08_others</div>
+        </div>
+
+    </div>
+
+    <div class="photo-slot">
+
+        <div class="profile-image-container">
+
+            <span class="image-deco"
+                  style="top:42%; left:-40px;">
+                  🤍
+            </span>
+
+            <span class="image-deco"
+                  style="top:50%; right: 0px;">
+                  🦋
+            </span>
+
+            <span class="image-deco"
+                  style="bottom:75%; right:20px;">
+                  🤍
+            </span>
+
+            <img src="ME.png" alt="Profile" class="profile-image">
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="grass-bg">
+    <img src="Grassy hill.png" alt="">
+</div>
+
+<div class="footer">
+
+    <h1>© 2028 Budsarakam.S</h1>
+
+    <div class="footer-dots">
+        <div class="dot w1"></div>
+        <div class="dot y1"></div>
+        <div class="dot g1"></div>
+        <div class="dot p1"></div>
+        <div class="dot w2"></div>
+        <div class="dot o1"></div>
+        <div class="dot g2"></div>
+        <div class="dot p2"></div>
+    </div>
+
+    <p>all rights reserved 💗</p>
+
+</div>
+
+<div class="heart h1">♡</div>
+<div class="heart h2">♡</div>
+<div class="heart h3">♡</div>
+
+</body>
+</html>

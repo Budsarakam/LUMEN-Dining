@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUMEN Dining - จองคิวสำเร็จแล้ว</title>
+  
+  <!-- Google Fonts: Playfair Display & Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ล็อกพื้นที่พอดี 100dvh ไม่ให้เกิดสกรอลล์บาร์ */
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #f7f4ed;
+      font-family: 'Prompt', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* กรอบจำลองขนาดหน้าจอมือถือ */
+    .mobile-container {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      height: 100dvh;
+      background-color: #fcf9f2;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+      color: #3d2314;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- Header Bar ด้านบน --- */
+    .header {
+      background-color: #3d2314;
+      color: #d6b896;
+      text-align: center;
+      padding: 6px 0 4px 0;
+      flex-shrink: 0;
+    }
+
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      letter-spacing: 3px;
+      line-height: 1;
+      font-weight: 400;
+    }
+
+    .header-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin-top: 1px;
+      color: #e5d2be;
+    }
+
+    /* --- Main Content --- */
+    .content {
+      padding: 10px 16px 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Section หัวข้อด้านบน */
+    .title-section {
+      text-align: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .page-title {
+      font-family: 'Prompt', sans-serif;
+      font-size: 25px;
+      font-weight: 700;
+      color: #3d2314;
+      line-height: 1.15;
+    }
+
+    .page-subtitle {
+      font-family: 'Prompt', sans-serif;
+      font-size: 11.5px;
+      color: #6e5448;
+      margin-top: 1px;
+    }
+
+    /* --- Ticket Card บัตรคิว --- */
+    .ticket-outer {
+      position: relative;
+      background-color: #ffffff;
+      border-radius: 16px;
+      padding: 10px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+      margin: 4px 0;
+    }
+
+    /* รอยเจาะข้างตั๋วซ้าย-ขวา */
+    .ticket-outer::before,
+    .ticket-outer::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 14px;
+      height: 14px;
+      background-color: #fcf9f2;
+      border-radius: 50%;
+      transform: translateY(-50%);
+    }
+
+    .ticket-outer::before {
+      left: -7px;
+    }
+
+    .ticket-outer::after {
+      right: -7px;
+    }
+
+    /* เส้นขอบในบัตรคิว */
+    .ticket-inner {
+      border: 1px solid #eae2d6;
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* โลโก้ด้านบนบัตรคิว */
+    .ticket-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #eee8df;
+    }
+
+    .ticket-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      letter-spacing: 0.5px;
+    }
+
+    .ticket-icon {
+      display: flex;
+      align-items: center;
+    }
+
+    .ticket-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: #1a1a1a;
+    }
+
+    /* ตัวเลขคิว */
+    .queue-label {
+      font-family: 'Prompt', sans-serif;
+      font-size: 12px;
+      color: #6e5448;
+      margin-top: 10px;
+      font-weight: 500;
+    }
+
+    .queue-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 58px;
+      font-weight: 700;
+      line-height: 1;
+      margin: 4px 0 10px 0;
+      background: linear-gradient(180deg, #d8b45c 0%, #b88f34 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
+    }
+
+    /* ปุ่มพิลล์บอกจำนวนคิวที่เหลือ */
+    .queue-badge {
+      background-color: #bfa14e;
+      color: #3d2314;
+      font-family: 'Prompt', sans-serif;
+      font-size: 11.5px;
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 5px 16px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+
+    /* ระยะเวลารอ */
+    .wait-label {
+      font-family: 'Prompt', sans-serif;
+      font-size: 10.5px;
+      color: #6e5448;
+      font-weight: 400;
+    }
+
+    .wait-time {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-top: 2px;
+      margin-bottom: 10px;
+    }
+
+    /* เส้นประคั่นตั๋วส่วนล่าง */
+    .ticket-divider-dashed {
+      width: 100%;
+      border-top: 1px dashed #d8d0c5;
+      margin-bottom: 10px;
+    }
+
+    /* ส่วนรายละเอียดล่างสุดในตั๋ว */
+    .ticket-footer {
+      display: flex;
+      width: 100%;
+      justify-content: space-around;
+      align-items: center;
+    }
+
+    .footer-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+    }
+
+    .col-label {
+      font-family: 'Prompt', sans-serif;
+      font-size: 11px;
+      color: #3d2314;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .col-value {
+      font-family: 'Prompt', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      color: #3d2314;
+    }
+
+    .col-value.en {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .v-divider {
+      width: 1px;
+      height: 28px;
+      background-color: #d8d0c5;
+    }
+
+    /* --- ปุ่มกดด้านล่าง --- */
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+      flex-shrink: 0;
+      margin-bottom: 4px;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background-color: #af9970;
+      color: #ffffff;
+      border: none;
+      border-radius: 25px;
+      padding: 9px 0 7px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+      transition: transform 0.1s ease;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary .main-text {
+      font-family: 'Prompt', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.1;
+    }
+
+    .btn-primary .sub-text {
+      font-family: 'Prompt', sans-serif;
+      font-size: 9.5px;
+      opacity: 0.9;
+      font-weight: 400;
+      margin-top: 1px;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      background-color: #e8ded1;
+      color: #3d2314;
+      border: none;
+      border-radius: 25px;
+      padding: 11px 0;
+      font-family: 'Prompt', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: transform 0.1s ease;
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.98);
+    }
+
+    /* --- SMS Pop-up Modal --- */
+    .sms-modal-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(2px);
+      z-index: 100;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .sms-modal-overlay.active {
+      display: flex;
+    }
+
+    .sms-box {
+      width: 100%;
+      max-width: 340px;
+      background-color: #ffffff;
+      border-radius: 20px;
+      padding: 20px 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+      border: 1px solid #e8ded1;
+      animation: smsSlideDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes smsSlideDown {
+      from { transform: translateY(-30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .sms-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #f0ece3;
+      padding-bottom: 10px;
+      margin-bottom: 12px;
+    }
+
+    .sms-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .sms-icon-badge {
+      width: 28px;
+      height: 28px;
+      background-color: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+    }
+
+    .sms-sender {
+      font-size: 13px;
+      font-weight: 700;
+      color: #3d2314;
+    }
+
+    .sms-time {
+      font-size: 10px;
+      color: #8c7365;
+    }
+
+    .sms-body {
+      font-size: 13px;
+      color: #2C2C2C;
+      line-height: 1.4;
+      margin-bottom: 16px;
+      background-color: #f9f7f2;
+      padding: 12px;
+      border-radius: 12px;
+      border-left: 4px solid #af9970;
+    }
+
+    .sms-body strong {
+      color: #9e2a1b;
+    }
+
+    .sms-btn-ok {
+      width: 100%;
+      background-color: #3d2314;
+      color: #fcf9f2;
+      border: none;
+      border-radius: 25px;
+      padding: 10px 0;
+      font-family: 'Prompt', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mobile-container">
+    <!-- Header Bar -->
+    <header class="header">
+      <div class="header-title">LUMEN</div>
+      <div class="header-subtitle">Dining</div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="content">
+      <!-- Title Section -->
+      <div class="title-section">
+        <h1 class="page-title">จองคิวสำเร็จแล้ว</h1>
+        <p class="page-subtitle">กรุณาแสดงหน้าจอตรวจคิวนี้ต่อพนักงานเมื่อถึงคิวของคุณ</p>
+      </div>
+
+      <!-- Ticket Card -->
+      <div class="ticket-outer">
+        <div class="ticket-inner">
+          <!-- Ticket Header -->
+          <div class="ticket-header">
+            <span class="ticket-brand">LUMEN Dining</span>
+            <div class="ticket-icon">
+              <svg viewBox="0 0 24 24">
+                <path d="M11 9H9V2H7v7H5V2H3v7c0 2.12 1.46 3.91 3.45 4.38V22h2.1v-8.62C10.54 12.91 12 11.12 12 9V2h-1v7zm8-7h-1c-1.66 0-3 1.34-3 3v7h2v10h2V2z"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Queue Number Section -->
+          <div class="queue-label">หมายเลขคิวของคุณ</div>
+          <div class="queue-number">A-04</div>
+
+          <!-- Queue Badge -->
+          <div class="queue-badge">เหลืออีก 2 คิว (queues ahead)</div>
+
+          <!-- Estimated Wait Time -->
+          <div class="wait-label">รอเวลาโดยประมาณ (Estimated wait food)</div>
+          <div class="wait-time">15-20 minutes</div>
+
+          <!-- Dashed Divider Line -->
+          <div class="ticket-divider-dashed"></div>
+
+          <!-- Ticket Footer Info -->
+          <div class="ticket-footer">
+            <div class="footer-col">
+              <span class="col-label">จำนวนผู้ใช้บริการ</span>
+              <span class="col-value">3-4 คน</span>
+            </div>
+            <div class="v-divider"></div>
+            <div class="footer-col">
+              <span class="col-label">โซนที่นั่ง</span>
+              <span class="col-value en">Indoor</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="button-group">
+        <!-- ปุ่มสั่งอาหารล่วงหน้า -> ลิงก์ไปหน้า เมนูอาหารทั้งหมด.html -->
+        <a href="เมนูอาหาร.html" class="btn-primary">
+          <span class="main-text">สั่งอาหารล่วงหน้า</span>
+          <span class="sub-text">Pre-order food</span>
+        </a>
+
+        <!-- ปุ่มยกเลิกคิว -> แสดงป๊อปอัพ SMS แจ้งเตือน -->
+        <button type="button" class="btn-secondary" onclick="triggerCancelSMS()">ยกเลิกคิว</button>
+      </div>
+    </main>
+
+    <!-- Pop-up จำลอง SMS แจ้งเตือนการยกเลิกคิว -->
+    <div class="sms-modal-overlay" id="smsModal">
+      <div class="sms-box">
+        <div class="sms-header">
+          <div class="sms-title-group">
+            <div class="sms-icon-badge">💬</div>
+            <span class="sms-sender">SMS Notification</span>
+          </div>
+          <span class="sms-time">เมื่อสักครู่นี้</span>
+        </div>
+        <div class="sms-body">
+          <strong>LUMEN Dining:</strong> คุณได้ทำการยกเลิกคิวหมายเลข <strong>A-04</strong> เรียบร้อยแล้ว ขอบคุณที่ใช้บริการค่ะ
+        </div>
+        <!-- ปุ่มกดตกลง -> ย้อนกลับไปหน้าหลัก Homepage.html -->
+        <a href="Homepage.html" class="sms-btn-ok">ตกลง (กลับหน้าหลัก)</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function triggerCancelSMS() {
+      document.getElementById('smsModal').classList.add('active');
+    }
+  </script>
+
+</body>
+</html>

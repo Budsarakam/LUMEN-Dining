@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUMEN Dining</title>
+    <!-- Google Fonts: Playfair Display & Prompt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        html, body {
+            height: 100vh;
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden;
+            background-color: #f7f4ed;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mobile-container {
+            position: relative;
+            width: 100%;
+            max-width: 430px;
+            height: 100vh;
+            height: 100dvh;
+            background-color: #fcf9f2;
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* --- Header --- */
+        .header {
+            background-color: #3d2314;
+            color: #d6b896;
+            text-align: center;
+            padding: 6px 0 4px 0;
+            flex-shrink: 0;
+        }
+
+        .header .brand-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            letter-spacing: 3px;
+            font-weight: 400;
+            line-height: 1;
+        }
+
+        .header .brand-subtitle {
+            font-family: 'Playfair Display', serif;
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-top: 1px;
+            color: #e5d2be;
+        }
+
+        /* --- Main Content --- */
+        .content {
+            padding: 4px 12px 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+            min-height: 0;
+            justify-content: space-between;
+        }
+
+        .welcome-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: #4a2e23;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            margin-left: 2px;
+            flex-shrink: 0;
+        }
+
+        /* --- Action Grid --- */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .action-card {
+            background-color: #dacdb5;
+            border-radius: 12px;
+            padding: 6px 4px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.15s ease, background-color 0.2s ease;
+        }
+
+        .action-card:active {
+            transform: scale(0.96);
+            background-color: #cfc0a6;
+        }
+
+        .action-icon {
+            width: 22px;
+            height: 22px;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #4a2e23;
+        }
+
+        .action-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #3d2314;
+            line-height: 1.1;
+            margin-bottom: 1px;
+        }
+
+        .action-desc {
+            font-size: 8.5px;
+            color: #5a4235;
+            line-height: 1;
+        }
+
+        /* --- Card 1: แนะนำโดยเชฟ --- */
+        .chef-card {
+            position: relative;
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            background-image: url('chef_menu.jpg'); 
+            background-size: cover;
+            background-position: center;
+            padding: 10px 14px 12px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .chef-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .chef-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #3d2314;
+        }
+
+        .chef-right-text {
+            font-family: 'Playfair Display', serif;
+            font-size: 9.5px;
+            color: #8c7365;
+            text-align: right;
+            line-height: 1.2;
+        }
+
+        .chef-subtext {
+            margin-top: 2px;
+        }
+
+        .course-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 11.5px;
+            color: #5c4436;
+        }
+
+        .course-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 11.5px;
+            color: #5c4436;
+        }
+
+        .btn-slide-dark {
+            align-self: flex-end;
+            background-color: #60382b;
+            color: #ffffff;
+            font-size: 10px;
+            padding: 5px 10px;
+            border-radius: 7px;
+            border: none;
+            cursor: pointer;
+            font-weight: 400;
+            text-decoration: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        /* --- Card 2: เมนูพิเศษประจำฤดูกาล --- */
+        .seasonal-card {
+            position: relative;
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            background-color: #1a1a1a;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background-image: url('seasonal_menu.jpg');
+            background-size: cover;
+            background-position: center;
+            padding: 10px 14px 16px 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .seasonal-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffffff;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+        }
+
+        .seasonal-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2px;
+        }
+
+        .dish-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 11.5px;
+            color: #ffffff;
+            margin-bottom: 4px;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.7);
+            line-height: 1.2;
+        }
+
+        .brand-badge {
+            font-size: 7px;
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            opacity: 0.9;
+        }
+
+        .brand-badge .s-logo {
+            border: 1px solid #ffffff;
+            border-radius: 50%;
+            width: 11px;
+            height: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 7px;
+            font-weight: bold;
+        }
+
+        .btn-slide-light {
+            background-color: #e8ded1;
+            color: #4a2e23;
+            font-size: 10px;
+            padding: 5px 10px;
+            border-radius: 7px;
+            border: none;
+            cursor: pointer;
+            font-weight: 400;
+            text-decoration: none;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        /* --- Modal Overlay Base --- */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(2px);
+            z-index: 100;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            position: relative;
+            width: 100%;
+            max-width: 320px;
+            background-color: #ffffff;
+            border-radius: 20px;
+            padding: 20px 18px 18px 18px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: modalFadeIn 0.2s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { transform: scale(0.92); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            color: #1a1a1a;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-header-icon {
+            width: 42px;
+            height: 42px;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-header-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #a88463;
+        }
+
+        /* Modal 1 */
+        .modal-table-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #3d2314;
+            line-height: 1.2;
+        }
+
+        .modal-table-subtitle {
+            font-size: 12.5px;
+            font-weight: 500;
+            color: #3d2314;
+            margin-bottom: 18px;
+            line-height: 1.2;
+        }
+
+        .modal-options-group {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            width: 100%;
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13.5px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.1s ease;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.98);
+        }
+
+        .modal-btn-bill {
+            background-color: #df8c96;
+            color: #3d2314;
+        }
+
+        .modal-btn-staff {
+            background-color: #e5d7c3;
+            color: #3d2314;
+        }
+
+        .modal-btn-icon {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .modal-btn-icon svg {
+            width: 100%;
+            height: 100%;
+            fill: #3d2314;
+        }
+
+        /* Modal 2 */
+        .staff-modal-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #4a2e23;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .staff-options-list {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .staff-option-item {
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .staff-option-item input[type="radio"] {
+            display: none;
+        }
+
+        .staff-option-box {
+            width: 100%;
+            background-color: #ebdcc8;
+            border-radius: 12px;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 2px solid transparent;
+            transition: border-color 0.15s ease, background-color 0.15s ease;
+        }
+
+        .staff-option-item input[type="radio"]:checked + .staff-option-box {
+            border-color: #60382b;
+            background-color: #e2ceb7;
+        }
+
+        .opt-icon {
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .opt-text {
+            text-align: left;
+            line-height: 1.15;
+        }
+
+        .opt-text strong {
+            display: block;
+            font-size: 10.5px;
+            color: #3d2314;
+            font-weight: 600;
+        }
+
+        .opt-text span {
+            display: block;
+            font-size: 8.5px;
+            color: #6e5448;
+        }
+
+        .staff-modal-actions {
+            width: 100%;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-confirm-call {
+            flex: 1.6;
+            background-color: #a43e2b;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            line-height: 1.2;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .btn-cancel-call {
+            flex: 1;
+            background-color: #48b857;
+            color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            padding: 8px 6px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            line-height: 1.2;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .btn-confirm-call:active, .btn-cancel-call:active {
+            transform: scale(0.97);
+        }
+
+        /* --- Modal 3: Auto-dismissing Notification Toast --- */
+        .notif-card {
+            background-color: #3d2314;
+            color: #fcf9f2;
+            border-radius: 18px;
+            padding: 20px 18px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #60382b;
+        }
+
+        .notif-icon {
+            font-size: 32px;
+            line-height: 1;
+        }
+
+        .notif-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #e5d2be;
+        }
+
+        .notif-desc {
+            font-size: 13px;
+            color: #ffffff;
+            line-height: 1.3;
+            font-weight: 500;
+        }
+
+        .notif-timer-bar {
+            width: 100%;
+            height: 3px;
+            background-color: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .notif-progress {
+            width: 100%;
+            height: 100%;
+            background-color: #10B981;
+            animation: timerCountdown 5s linear forwards;
+        }
+
+        @keyframes timerCountdown {
+            from { width: 100%; }
+            to { width: 0%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mobile-container">
+        <!-- Header Top Banner -->
+        <header class="header">
+            <h1 class="brand-title">LUMEN</h1>
+            <p class="brand-subtitle">Dining</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="content">
+            <!-- Title -->
+            <h2 class="welcome-title">Welcome to Lumen Dining</h2>
+
+            <!-- 3 Quick Action Buttons -->
+            <div class="action-grid">
+                <!-- 1. จองคิว/รับโต๊ะ -->
+                <a href="จองคิวออนไลน์อัตโนมัติ.html" class="action-card">
+                    <div class="action-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V10h14v10zm0-12H5V6h14v2z"/>
+                            <circle cx="8" cy="13" r="1.2"/>
+                            <circle cx="12" cy="13" r="1.2"/>
+                            <circle cx="16" cy="13" r="1.2"/>
+                            <circle cx="8" cy="17" r="1.2"/>
+                            <circle cx="12" cy="17" r="1.2"/>
+                            <circle cx="16" cy="17" r="1.2"/>
+                        </svg>
+                    </div>
+                    <div class="action-title">จองคิว/รับโต๊ะ</div>
+                    <div class="action-desc">จองโต๊ะออนไลน์</div>
+                </a>
+
+                <!-- 2. สั่งอาหาร -->
+                <a href="เมนูอาหารทั้งหมด.html" class="action-card">
+                    <div class="action-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 4a1 1 0 0 1 1 1v1.05A8.002 8.002 0 0 1 21 14v1H3v-1a8.002 8.002 0 0 1 8-7.95V5a1 1 0 0 1 1-1zm-9 13h18v2H3v-2z"/>
+                        </svg>
+                    </div>
+                    <div class="action-title">สั่งอาหาร</div>
+                    <div class="action-desc">สั่งอาหารล่วงหน้า/สั่งอาหารเพิ่มเติม</div>
+                </a>
+
+                <!-- 3. เช็คบิล/บริการ -->
+                <div class="action-card" onclick="openServiceModal()">
+                    <div class="action-icon">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-9 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                        </svg>
+                    </div>
+                    <div class="action-title">เช็คบิล/บริการ</div>
+                    <div class="action-desc">ขอเช็คบิล / เรียกพนักงาน</div>
+                </div>
+            </div>
+
+            <!-- Card 1: แนะนำโดยเชฟ -->
+            <div class="chef-card">
+                <div class="chef-card-header">
+                    <div>
+                        <div class="chef-title">แนะนำโดยเชฟ</div>
+                        <div class="chef-subtext">
+                            <div class="course-name">Premium course</div>
+                            <div class="course-price">1,200-</div>
+                        </div>
+                    </div>
+                    <div class="chef-right-text">
+                        Premium Wagyu<br>Striploin A5
+                    </div>
+                </div>
+                <a href="เมนูอาหารทั้งหมด.html" class="btn-slide-dark">
+                    เลื่อนดูเมนูพิเศษ &gt;
+                </a>
+            </div>
+
+            <!-- Card 2: เมนูพิเศษประจำฤดูกาล -->
+            <div class="seasonal-card">
+                <div class="seasonal-title">เมนูพิเศษประจำฤดูกาล</div>
+                <div class="seasonal-footer">
+                    <div class="dish-info">
+                        <div class="dish-name">Pan-seared Diver<br>Scallops</div>
+                        <div class="brand-badge">
+                            <div class="s-logo">S</div>
+                            <div>SO/member<br>The Best Experience</div>
+                        </div>
+                    </div>
+                    <a href="เมนูอาหารทั้งหมด.html" class="btn-slide-light">
+                        เลื่อนดูเมนูพิเศษ &gt;
+                    </a>
+                </div>
+            </div>
+        </main>
+
+        <!-- Pop-up Modal 1: เลือกประเภทบริการ -->
+        <div class="modal-overlay" id="serviceModal">
+            <div class="modal-card">
+                <button class="modal-close-btn" onclick="closeServiceModal()">✕</button>
+                
+                <div class="modal-header-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4a1 1 0 0 1 1 1v1.05A8.002 8.002 0 0 1 21 14v1H3v-1a8.002 8.002 0 0 1 8-7.95V5a1 1 0 0 1 1-1zm-9 13h18v2H3v-2z"/>
+                    </svg>
+                </div>
+
+                <div class="modal-table-title">โต๊ะ T-08 คิว A-04</div>
+                <div class="modal-table-subtitle">ต้องการรับบริการด้านไหน</div>
+
+                <div class="modal-options-group">
+                    <a href="ตรวจสอบและชำระเงิน.html" class="modal-btn modal-btn-bill">
+                        <div class="modal-btn-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1s-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm-2 14l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/>
+                            </svg>
+                        </div>
+                        <span>ขอเช็คบิล (Request bill)</span>
+                    </a>
+
+                    <button type="button" class="modal-btn modal-btn-staff" onclick="openStaffModal()">
+                        <div class="modal-btn-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/>
+                            </svg>
+                        </div>
+                        <span>เรียกพนักงาน (Call staff)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pop-up Modal 2: รายละเอียดเรียกพนักงาน -->
+        <div class="modal-overlay" id="staffModal">
+            <div class="modal-card">
+                <button class="modal-close-btn" onclick="closeStaffModal()">✕</button>
+                
+                <div class="modal-header-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 4a1 1 0 0 1 1 1v1.05A8.002 8.002 0 0 1 21 14v1H3v-1a8.002 8.002 0 0 1 8-7.95V5a1 1 0 0 1 1-1zm-9 13h18v2H3v-2z"/>
+                    </svg>
+                </div>
+
+                <div class="staff-modal-title">ต้องการให้พนักงานช่วยเหลือด้านใดคะ</div>
+
+                <div class="staff-options-list">
+                    <label class="staff-option-item">
+                        <input type="radio" name="staff_need" value="water" checked>
+                        <div class="staff-option-box">
+                            <span class="opt-icon">🥛</span>
+                            <div class="opt-text">
+                                <strong>ขอเติมน้ำดื่ม / เติมไวน์</strong>
+                                <span>(Refill water/wine)</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="staff-option-item">
+                        <input type="radio" name="staff_need" value="cutlery">
+                        <div class="staff-option-box">
+                            <span class="opt-icon">🍽️</span>
+                            <div class="opt-text">
+                                <strong>ขอเปลี่ยนจาน / ช้อนส้อมเพิ่ม</strong>
+                                <span>(Request extra cutlery/plates)</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="staff-option-item">
+                        <input type="radio" name="staff_need" value="food_status">
+                        <div class="staff-option-box">
+                            <span class="opt-icon">🔥</span>
+                            <div class="opt-text">
+                                <strong>สอบถามความสุก / ระยะเวลาอาหาร</strong>
+                                <span>(Check food status)</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="staff-option-item">
+                        <input type="radio" name="staff_need" value="manager">
+                        <div class="staff-option-box">
+                            <span class="opt-icon">💬</span>
+                            <div class="opt-text">
+                                <strong>พูดคุยกับผู้จัดการ / สอบถามเพิ่มเติม</strong>
+                                <span>(General assistance)</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <label class="staff-option-item">
+                        <input type="radio" name="staff_need" value="other">
+                        <div class="staff-option-box">
+                            <div class="opt-text">
+                                <strong>อื่นๆ</strong>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+
+                <div class="staff-modal-actions">
+                    <!-- ปุ่มสีแดง: กดส่งสัญญาณเรียกพนักงาน -->
+                    <button type="button" class="btn-confirm-call" onclick="confirmCallStaff()">
+                        🔔 กดส่งสัญญาณเรียกพนักงาน<br>[ Confirm Call ]
+                    </button>
+                    <!-- ปุ่มสีเขียว: กดยกเลิกแล้วลิงก์กลับไปที่หน้า Homepage.html -->
+                    <a href="Homepage.html" class="btn-cancel-call">
+                        🟢 ยกเลิก<br>[ Cancel ]
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pop-up Modal 3: ป๊อปอัพแจ้งเตือนการเดินของพนักงาน (แสดง 5 วินาทีแล้วหายไปอัตโนมัติ) -->
+        <div class="modal-overlay" id="notificationModal">
+            <div class="modal-card notif-card">
+                <div class="notif-icon">🔔</div>
+                <div class="notif-title">ส่งสัญญาณเรียบร้อยแล้ว</div>
+                <div class="notif-desc">พนักงานจะเดินไปหาที่โต๊ะภายใน 2-3 นาที</div>
+                <div class="notif-timer-bar">
+                    <div class="notif-progress" id="notifProgress"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        let autoDismissTimer;
+
+        function openServiceModal() {
+            document.getElementById('serviceModal').classList.add('active');
+        }
+
+        function closeServiceModal() {
+            document.getElementById('serviceModal').classList.remove('active');
+        }
+
+        function openStaffModal() {
+            closeServiceModal();
+            document.getElementById('staffModal').classList.add('active');
+        }
+
+        function closeStaffModal() {
+            document.getElementById('staffModal').classList.remove('active');
+        }
+
+        // เมื่อกดปุ่มสีแดง (ส่งสัญญาณเรียกพนักงาน)
+        function confirmCallStaff() {
+            closeStaffModal(); // ปิดหน้าต่างเรียกพนักงานเดิม
+            
+            const notifModal = document.getElementById('notificationModal');
+            const progress = document.getElementById('notifProgress');
+            
+            // รีเซ็ตการทำงานของเอนิเมชันแถบเวลา
+            progress.style.animation = 'none';
+            progress.offsetHeight; // trigger reflow
+            progress.style.animation = 'timerCountdown 5s linear forwards';
+            
+            // แสดงป๊อปอัพแจ้งเตือน
+            notifModal.classList.add('active');
+
+            // ตั้งเวลาให้ป๊อปอัพหายไปเองภายใน 5 วินาที (5000ms)
+            clearTimeout(autoDismissTimer);
+            autoDismissTimer = setTimeout(() => {
+                closeNotificationModal();
+            }, 5000);
+        }
+
+        function closeNotificationModal() {
+            document.getElementById('notificationModal').classList.remove('active');
+        }
+
+        // ปิดป๊อปอัพเมื่อกดพื้นที่ว่างภายนอก
+        document.getElementById('serviceModal').addEventListener('click', function(e) {
+            if (e.target === this) closeServiceModal();
+        });
+        document.getElementById('staffModal').addEventListener('click', function(e) {
+            if (e.target === this) closeStaffModal();
+        });
+        document.getElementById('notificationModal').addEventListener('click', function(e) {
+            if (e.target === this) closeNotificationModal();
+        });
+    </script>
+</body>
+</html>

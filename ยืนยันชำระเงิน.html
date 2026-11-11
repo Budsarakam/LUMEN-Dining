@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LUMEN Dining - ชำระเงินสำเร็จ</title>
+  
+  <!-- Google Fonts: Playfair Display & Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: #f7f4ed;
+      font-family: 'Prompt', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* กรอบจำลองขนาดจอมือถือ */
+    .mobile-container {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      height: 100dvh;
+      background-color: #fcf9f2;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+      color: #3d2314;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- Header Bar --- */
+    .header {
+      background-color: #3d2314;
+      color: #d6b896;
+      text-align: center;
+      padding: 6px 0 4px 0;
+      flex-shrink: 0;
+    }
+
+    .header-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      letter-spacing: 3px;
+      line-height: 1;
+      font-weight: 400;
+    }
+
+    .header-subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin-top: 1px;
+      color: #e5d2be;
+    }
+
+    /* --- Main Content Area --- */
+    .content {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    /* --- Success Icon Header --- */
+    .success-badge-section {
+      text-align: center;
+      margin-top: 4px;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .check-icon-circle {
+      width: 64px;
+      height: 64px;
+      background-color: #2e7d32;
+      color: #ffffff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 10px auto;
+      font-size: 32px;
+      box-shadow: 0 6px 18px rgba(46, 125, 50, 0.25);
+      animation: checkBounce 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes checkBounce {
+      0% { transform: scale(0); opacity: 0; }
+      60% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); }
+    }
+
+    .thank-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #3d2314;
+      line-height: 1.25;
+    }
+
+    .thank-subtitle {
+      font-size: 11.5px;
+      color: #6e5448;
+      margin-top: 4px;
+      line-height: 1.4;
+      padding: 0 10px;
+    }
+
+    /* --- E-Receipt Summary Card --- */
+    .receipt-card {
+      background-color: #ebdcc8;
+      border-radius: 18px;
+      padding: 14px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+      margin-bottom: 10px;
+      flex-shrink: 0;
+    }
+
+    .receipt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed #c9b69c;
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+    }
+
+    .receipt-header-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #3d2314;
+    }
+
+    .status-tag-paid {
+      background-color: #d1e7dd;
+      color: #0f5132;
+      font-size: 9.5px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 12px;
+      border: 1px solid #badbcc;
+    }
+
+    .receipt-details-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 11px;
+      color: #3d2314;
+    }
+
+    .receipt-row {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .receipt-row .label {
+      color: #6e5448;
+    }
+
+    .receipt-row .val {
+      font-weight: 600;
+    }
+
+    .receipt-divider {
+      border-top: 1px dashed #c9b69c;
+      margin: 8px 0;
+    }
+
+    .receipt-row.total-row {
+      font-size: 14px;
+      font-weight: 700;
+      color: #3d2314;
+    }
+
+    .receipt-row.total-row .val {
+      color: #8c2a18;
+      font-size: 16px;
+    }
+
+    /* --- Rating Section --- */
+    .rating-card {
+      background-color: rgba(255, 255, 255, 0.7);
+      border-radius: 14px;
+      padding: 10px;
+      text-align: center;
+      margin-bottom: 10px;
+      border: 1px solid #e2d5c3;
+      flex-shrink: 0;
+    }
+
+    .rating-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #5c3422;
+      margin-bottom: 4px;
+    }
+
+    .stars-wrapper {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      font-size: 20px;
+      color: #d1c1ad;
+      cursor: pointer;
+    }
+
+    .stars-wrapper span.active {
+      color: #f59e0b;
+    }
+
+    /* --- Action Buttons --- */
+    .actions-section {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      flex-shrink: 0;
+      margin-top: auto;
+    }
+
+    .btn-home {
+      width: 100%;
+      background-color: #3d2314;
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 11px 0;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+      transition: transform 0.1s ease;
+      display: block;
+      font-family: 'Prompt', sans-serif;
+    }
+
+    .btn-home:active {
+      transform: scale(0.98);
+    }
+
+    .btn-home span {
+      display: block;
+      font-size: 9px;
+      color: #d6b896;
+      font-weight: 400;
+      margin-top: 1px;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 10px;
+      color: #8c7365;
+      margin-top: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mobile-container">
+    <!-- Header Bar -->
+    <header class="header">
+      <div class="header-title">LUMEN</div>
+      <div class="header-subtitle">Dining</div>
+    </header>
+
+    <!-- Content Area -->
+    <main class="content">
+      <div>
+        <!-- Success Check Badge -->
+        <div class="success-badge-section">
+          <div class="check-icon-circle">✓</div>
+          <h1 class="thank-title">ชำระเงินสำเร็จเรียบร้อย</h1>
+          <p class="thank-subtitle">
+            ขอบคุณที่ร่วมสร้างความทรงจำมื้ออาหารสุดพิเศษกับ <strong>LUMEN Dining</strong> <br>หวังเป็นอย่างยิ่งว่าท่านจะได้รับความประทับใจในมื้อนี้ค่ะ
+          </p>
+        </div>
+
+        <!-- E-Receipt Card Summary -->
+        <div class="receipt-card">
+          <div class="receipt-header">
+            <span class="receipt-header-title">ใบเสร็จรับเงินอิเล็กทรอนิกส์</span>
+            <span class="status-tag-paid">✓ ชำระแล้ว</span>
+          </div>
+
+          <div class="receipt-details-list">
+            <div class="receipt-row">
+              <span class="label">หมายเลขออเดอร์</span>
+              <span class="val">#LM-88902</span>
+            </div>
+            <div class="receipt-row">
+              <span class="label">โต๊ะ / คิว</span>
+              <span class="val">T-08 (คิว A-04)</span>
+            </div>
+            <div class="receipt-row">
+              <span class="label">วันที่ & เวลา</span>
+              <span class="val" id="receiptTime">09 พ.ย. 2026 - 20:35 น.</span>
+            </div>
+            <div class="receipt-row">
+              <span class="label">ช่องทางชำระเงิน</span>
+              <span class="val">PromptPay QR</span>
+            </div>
+
+            <div class="receipt-divider"></div>
+
+            <div class="receipt-row total-row">
+              <span class="label" style="color:#3d2314;">ยอดชำระสุทธิ</span>
+              <span class="val">฿5,943</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Feedback Stars -->
+        <div class="rating-card">
+          <div class="rating-title">ให้คะแนนความพึงพอใจสำหรับมื้อนี้</div>
+          <div class="stars-wrapper" id="starRating">
+            <span onclick="setRating(1)">★</span>
+            <span onclick="setRating(2)">★</span>
+            <span onclick="setRating(3)">★</span>
+            <span onclick="setRating(4)">★</span>
+            <span onclick="setRating(5)" class="active">★</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="actions-section">
+        <a href="Homepage.html" class="btn-home">
+          กลับสู่หน้าหลัก
+          <span>Back to Homepage</span>
+        </a>
+        <div class="footer-note">ใบเสร็จถูกบันทึกในระบบเรียบร้อยแล้ว ขอให้ท่านเดินทางกลับโดยสวัสดิภาพ</div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // อัปเดตเวลาปัจจุบันในใบเสร็จ
+    const now = new Date();
+    const timeString = now.toLocaleDateString('th-TH', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    }) + ' - ' + now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' }) + ' น.';
+    
+    document.getElementById('receiptTime').innerText = timeString;
+
+    // ระบบกดดาวประเมินความพึงพอใจ
+    function setRating(rating) {
+      const stars = document.querySelectorAll('#starRating span');
+      stars.forEach((star, index) => {
+        if (index < rating) {
+          star.classList.add('active');
+        } else {
+          star.classList.remove('active');
+        }
+      });
+    }
+
+    // เคลียร์ข้อมูลออเดอร์เมื่อชำระเงินเสร็จ
+    localStorage.removeItem('lumen_active_order');
+  </script>
+
+</body>
+</html>

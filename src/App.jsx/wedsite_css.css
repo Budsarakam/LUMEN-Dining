@@ -1,0 +1,310 @@
+/* ==========================================
+   LUMEN DINING - STYLESHEET (PAGE 1)
+   ========================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background-color: #1A1A24;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* กรอบจำลองหน้าจอมือถือ */
+.app-wrapper {
+  width: 100%;
+  max-width: 430px;
+  height: 100vh;
+  max-height: 880px;
+  background-color: #FAF6E9;
+  position: relative;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media (min-width: 480px) {
+  .app-wrapper {
+    border-radius: 40px;
+    height: 850px;
+    border: 8px solid #2A2A35;
+  }
+}
+
+/* 1. HERO SECTION */
+.hero-section {
+  position: relative;
+  height: 460px;
+  width: 100%;
+  background-image: url('[suspicious link removed]');
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.35) 50%, rgba(0, 0, 0, 0.75) 100%);
+}
+
+.brand-container {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding-top: 80px;
+  color: #F3E5D8;
+}
+
+.brand-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  font-weight: 400;
+  letter-spacing: 6px;
+  line-height: 1.1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.brand-subtitle {
+  font-family: 'Prompt', sans-serif;
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 4px;
+  margin-top: 4px;
+  color: #E3D3C4;
+}
+
+.brand-tagline {
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 1px;
+  margin-top: 12px;
+  color: #DFD0C3;
+  opacity: 0.9;
+}
+
+/* 2. FLOATING STATUS CARD */
+.status-card {
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  background-color: #FFFFFF;
+  border-radius: 20px;
+  padding: 16px 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+  display: flex;
+  align-items: center;
+  z-index: 10;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.status-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.status-col-center {
+  align-items: center;
+}
+
+.status-divider {
+  width: 1px;
+  height: 45px;
+  background-color: #E2E8F0;
+  margin: 0 12px;
+}
+
+.status-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1A1A1A;
+}
+
+.status-header .icon {
+  width: 16px;
+  height: 16px;
+  stroke: #4A5568;
+}
+
+.status-time {
+  font-size: 13px;
+  font-weight: 500;
+  color: #4A5568;
+  margin-top: 4px;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.dot-green {
+  width: 8px;
+  height: 8px;
+  background-color: #10B981;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.badge-text {
+  font-size: 12px;
+  font-weight: 600;
+  color: #059669;
+}
+
+.status-queue {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin-top: 6px;
+}
+
+/* 3. ACTION BUTTONS SECTION */
+.action-section {
+  background-color: #FAF6E9;
+  padding: 56px 24px 36px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top-left-radius: 36px;
+  border-top-right-radius: 36px;
+}
+
+.divider-or {
+  text-align: center;
+  color: #788764;
+  font-size: 13px;
+  font-weight: 500;
+  margin: 2px 0;
+}
+
+/* สไตล์ปุ่มกดทั่วไป */
+.btn {
+  width: 100%;
+  height: 54px;
+  border-radius: 50px;
+  border: none;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* ปุ่มที่ 1: เข้าหน้าหลัก (สีทองเบจ) */
+.btn-home {
+  background-color: #C8B393;
+  justify-content: center;
+  position: relative;
+  box-shadow: 0 4px 12px rgba(200, 179, 147, 0.3);
+}
+
+.btn-home .icon-circle {
+  position: absolute;
+  left: 8px;
+  width: 38px;
+  height: 38px;
+  background-color: #4A3228;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-home .icon-circle svg {
+  width: 18px;
+  height: 18px;
+  stroke: #FFFFFF;
+}
+
+.btn-home .btn-text {
+  color: #2C1D17;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ปุ่มที่ 2: ดูเมนูอาหาร (สีกาแฟเข้ม) */
+.btn-menu {
+  background-color: #653322;
+  justify-content: space-between;
+  box-shadow: 0 6px 16px rgba(101, 51, 34, 0.25);
+}
+
+.btn-content-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-utensils {
+  width: 20px;
+  height: 20px;
+  stroke: #F3E5D8;
+}
+
+.btn-menu .btn-text {
+  color: #FFFFFF;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.chevron-icon {
+  width: 20px;
+  height: 20px;
+  stroke: rgba(255, 255, 255, 0.8);
+}
+
+/* ปุ่มที่ 3: จองโต๊ะออนไลน์ (สีขาวขอบดำ) */
+.btn-booking {
+  background-color: #FFFFFF;
+  border: 2px solid #2B1B17;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+.icon-calendar-wrapper {
+  background-color: #FEF3C7;
+  padding: 6px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-calendar-wrapper svg {
+  width: 20px;
+  height: 20px;
+  stroke: #D97706;
+}
+
+.btn-booking .btn-text {
+  color: #2B1B17;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.btn-booking .chevron-icon {
+  stroke: #2B1B17;
+}
